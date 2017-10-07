@@ -12,9 +12,6 @@ export class EsriMapComponent implements OnInit {
     @ViewChild('map') mapRef: ElementRef;
     @Input() center: __esri.PointProperties;
     @Output() centerChange: EventEmitter<__esri.Point> = new EventEmitter<__esri.Point>();
-
-    @Input() points: Array<String>;
-
     private _mapViewProperties: __esri.MapViewProperties;
     private _observableSubscriptions: Subscription[] = [];
 
