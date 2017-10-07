@@ -13,10 +13,12 @@ import { CounterComponent } from './components/counter/counter.component';
 import { EsriLoaderModule } from 'angular-esri-loader';
 import { EsriMapService } from './components/esri-map/esri-map.service';
 import { EsriMapComponent } from './components/esri-map/esri-map.component';
+import { TaskComponent } from './components/task/task.component';
 
 @NgModule({
     declarations: [
         AppComponent,
+        TaskComponent,
         EsriMapComponent,
         NavMenuComponent,
         CounterComponent,
@@ -33,6 +35,7 @@ import { EsriMapComponent } from './components/esri-map/esri-map.component';
             { path: 'home', component: HomeComponent },
             { path: 'counter', component: CounterComponent },
             { path: 'fetch-data', component: FetchDataComponent },
+            { path: 'task-component', component: TaskComponent },
             { path: '**', redirectTo: 'home' }
         ])
     ],
