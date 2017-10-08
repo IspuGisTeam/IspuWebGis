@@ -6,6 +6,6 @@ namespace IspuWebGis.Models
 {
     public class Route
     {
-        public List<CustomPointWithoutId> points { get; set; }
+        public List<CustomPoint> points { get; set; }
     }
 }

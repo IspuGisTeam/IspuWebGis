@@ -8,15 +8,9 @@ namespace IspuWebGis.Models
     public class CustomPoint
     {
         public CustomPoint() { }
-        public CustomPoint(CustomPointWithoutId customPointWithoutId, int id) {
-            this.id = id;
-            address = customPointWithoutId.address;
-            latitude = customPointWithoutId.latitude;
-            longitude = customPointWithoutId.longitude;
-        }
-        public int id { get; set; }
+        public int? id { get; set; }
         public string address { get; set; }
-        public int latitude  { get; set; }
-        public int longitude { get; set; }
+        public float latitude  { get; set; }
+        public float longitude { get; set; }
     }
 }

@@ -20,10 +20,14 @@ namespace IspuWebGis.Controllers
             return new {tasks=new Task[] { task } };
         }
         [HttpPost]
-        public Task CreateTask([FromBody]TaskWithoutId taskWithoutId)
+        public Task CreateTask([FromBody]Task task)
         {
-            Task task = new Task(taskWithoutId);
             task.id = 5;
+            int i = 0;
+            foreach(var p in task.points)
+            {
+                p.id = i++;
+            }
             return task;
         }
     }
