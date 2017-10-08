@@ -15,7 +15,7 @@ export class EsriMapComponent implements OnInit {
     private _mapViewProperties: __esri.MapViewProperties;
     private _observableSubscriptions: Subscription[] = [];
 
-    constructor(private esriMapService: EsriMapService) { }
+    constructor(private esriMapService: EsriMapService ) { }
 
     ngOnInit() {
         this._initializeMap();
@@ -36,6 +36,7 @@ export class EsriMapComponent implements OnInit {
                 console.log('MapView is loaded');
                 this._handleMapCenterChange();
             });
+
     }
 
     private _handleMapCenterChange() {
@@ -47,4 +48,15 @@ export class EsriMapComponent implements OnInit {
         });
         this._observableSubscriptions.push(subscribe);
     }
+
+    createMarkers() {
+        var x = <number>this.center.longitude;
+        var y = <number>this.center.latitude;
+        var arr = new Array();
+        arr = this.esriMapService.addMarkers(x, y);
+        alert(arr[0]);
+        alert(arr[1]);
+        alert(arr[2]);
+    }
 }
+
