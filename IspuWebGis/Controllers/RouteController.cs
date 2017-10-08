@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using IspuWebGis.Models;
 namespace IspuWebGis.Controllers
 {
     [Produces("application/json")]
@@ -14,17 +14,16 @@ namespace IspuWebGis.Controllers
         [HttpPost]
         public RouteModel Get([FromBody]RouteModel route)
         {
+            int i = 0;
+            foreach (var p in route.points)
+            {
+                p.id = i++;
+            }
             return route;
-        }
-        public class Point
-        {
-            public string address { get; set; }
-            public int longitude { get; set; }
-            public int latitude { get; set; }
         }
         public class RouteModel
         { 
-            public List<Point> points { get; set; }
+            public List<CustomPoint> points { get; set; }
         }
     }
 }
