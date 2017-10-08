@@ -11,12 +11,44 @@
                     Here will be task
                 </li>-->
             </ul>
-
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID of task</th>
+                        <th>Id of user</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let task of tasks">
+                        <td>{{task.taskId}}</td>
+                        <td>{{task.userId}}</td>
+                        <td>{{task.name}}</td>
+                        <!--If user press on '-' button close with current task. -->
+                        <button class="btn btn-default" (click)="removeTask(task)">-</button>
+                    </tr>
+                </tbody>
+            </table>
             <div class="col-xs-12">
-                <button type="button" class="btn btn-success btn-add">
+                <button type="button" class="btn btn-success btn-add" (click)="addTask();">
                     <span class="fa idden-md hidden-lg hidden-xl">+</span>
                     <span class="hidden-sm hidden-xs">Add New Task</span>
                 </button>
+            </div>
+            <div *ngIf="pressOnAddButton">
+                <div class="form-group">
+                    <div class="form-group">
+                        <label>Id of User</label>
+                        <input class="form-control" 
+                               [(ngModel)]="userId" />
+                    </div>
+                    <div class="form-group">
+                        <label>Name of Task</label>
+                        <input class="form-control"
+                               [(ngModel)]="name" />
+                    </div>
+                    <button (click)="saveTask(taskId, userId, name)"> <img src="./save-start-button-image.png" width="50px" height="50px" /></button>
+                </div>
             </div>
         </div>
     </div>
