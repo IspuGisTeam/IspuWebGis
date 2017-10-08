@@ -1,0 +1,32 @@
+<div class="container-fluid footer-container">
+    <div class="row footer">
+        <div class="col-xs-9 points-list-container">
+            <div class="container-fluid points-list">
+                <div class="row" *ngFor="let p of points">
+                    <p>Point will be here: {{p}} </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-3 btn-list-container">
+            <div class="row">
+                <button type="button" class="btn hidden-xs hidden-sm" (click)="addPoint();">Generate points</button>
+                <button type="button" class="btn hidden-md hidden-lg hidden-xl" (click)="addPoint();">
+                    <span class="fa">Points</span>
+                </button>
+            </div>
+            <div class="row">
+                <button type="button" class="btn btn-primary hidden-xs hidden-sm">Make a way</button>
+                <button type="button" class="btn btn-primary hidden-md hidden-lg hidden-xl">
+                    <span class="fa">Run</span>
+                </button>
+            </div>
+            <div class="row">
+                <button type="button" class="btn btn-success hidden-xs hidden-sm">Save a way</button>
+                <button type="button" class="btn btn-success hidden-md hidden-lg hidden-xl">
+                    <span class="fa">Save</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

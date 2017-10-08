@@ -1,0 +1,79 @@
+#%RAML 1.0
+title: WebApi for WebGis App
+
+/api/route:
+  /{token}:
+   uriParameters:
+     token:
+       displayName: User token
+       type: string 
+    post:
+      description: create a route
+      body: 
+        application/json:
+          example: |
+            {
+              "points": [
+                {
+                  "address":"My address",
+                  "x":123,
+                  "y":20,
+                  "rank": 2
+                }, <..>
+              ]
+              "time":"12-04-2020 23:11",
+              "mode":"onFoot",
+              "name":"Home - Work"
+            }
+      responses: 
+        200:
+          body: 
+            application/json:
+              example: |
+                {
+                  "route":"23-231-323-1231-32"
+                  "time":"12-04-2020 23:11",
+                  "mode":"onFoot",
+                  "name":"Home - Work"
+                }
+/api/history:
+  /{token}:
+   uriParameters:
+     token:
+       displayName: User token
+       type: string 
+  get:
+    description: get history of user with token
+    responses: 
+      200:
+        body: 
+          application/json:
+            example: |
+              {
+                [
+                  "taskId":21,
+                  "name":"Home - Work"
+                ]
+              }
+/api/history/getById/{id}:
+  uriParameters:
+    id: 
+      displayName: tasks's id
+      type: int 
+  get:
+    description: get task by id
+    responses: 
+      200:
+        body: 
+          application/json:
+             example: |
+                {
+                  "id":221,
+                  "userId": 213
+                  "isFaverable": false
+                  "route":"23-231-323-1231-32"
+                  "time":"12-04-2020 23:11",
+                  "mode":"onFoot",
+                  "name":"Home - Work"
+                }
+  
