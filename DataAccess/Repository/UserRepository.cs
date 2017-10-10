@@ -7,32 +7,32 @@ namespace DataAccess.Repository
 {
     class UserRepository : IRepository<User>
     {
-        public int Create(User item)
+        public override int Create(User item)
         {
             throw new NotImplementedException();
         }
 
-        public bool Delete(User item)
+        public override bool Delete(User item)
         {
             throw new NotImplementedException();
         }
 
-        public User Get(int id)
+        public override User Get(int id)
         {
             User user;
-            using (GisContext db = new GisContext())
+            using (GisContext db = new GisContext(options))
             {
                user  = (User)db.Users.Where(p => p.Id == id);
             }
             return user;
         }
 
-        public List<User> GetAll()
+        public override List<User> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public bool Update(User item)
+        public override bool Update(User item)
         {
             throw new NotImplementedException();
         }

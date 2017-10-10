@@ -3,24 +3,27 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using DataAccess.Model;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.SqlServer.Server;
 namespace DataAccess.Repository
 {
     public class PointRepository : IRepository<Point>
     {
-        public int Create(Point item)
+        public override int Create(Point item)
         {
+          
             int id = -1;
-            using (GisContext db = new GisContext())
-            {               
-                id = db.Points.Add(item).Id;
+            using (GisContext db = new GisContext(options))
+            {
+                id = db.Points.Add(item).Entity.Id;
                 db.SaveChanges();  
             }
             return id;
         }
 
-        public bool Delete(Point item)
+        public override bool Delete(Point item)
         {
-            using (GisContext db = new GisContext())
+            using (GisContext db = new GisContext(options))
             {
                 Point point = Get(item.Id);
                 if (point != null)
@@ -33,29 +36,29 @@ namespace DataAccess.Repository
             }
         }
 
-        public Point Get(int id)
+        public override Point Get(int id)
         {
             Point point;
-            using (GisContext db = new GisContext())
+            using (GisContext db = new GisContext(options))
             {
                 point = (Point)db.Points.Where(p => p.Id == id);
             }
             return point;
         }
 
-        public List<Point> GetAll()
+        public override List<Point> GetAll()
         {
             List<Point> points;
-            using (GisContext db = new GisContext())
+            using (GisContext db = new GisContext(options))
             {
                 points = db.Points.ToList<Point>();
             }
             return points;
         }
 
-        public bool Update(Point item)
+        public override bool Update(Point item)
         {
-            using (GisContext db = new GisContext())
+            using (GisContext db = new GisContext(options))
             {
                 Point point = Get(item.Id);
 
