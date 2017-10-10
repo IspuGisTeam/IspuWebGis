@@ -26,6 +26,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\components\esri-map\esri-map.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\esri-map\esri-map.service.ts" />
   </ItemGroup>
