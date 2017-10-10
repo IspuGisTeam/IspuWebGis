@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using DataAccess; 
+using Microsoft.EntityFrameworkCore;
 
 namespace IspuWebGis
 {
@@ -23,7 +25,9 @@ namespace IspuWebGis
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+           
         }
+        
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -53,6 +57,9 @@ namespace IspuWebGis
                     name: "spa-fallback",
                     defaults: new { controller = "Home", action = "Index" });
             });
+
+            DataAccess.Repository.IRepository<DataAccess.Model.Point> rep = new DataAccess.Repository.PointRepository();
+            rep.GetAll();
         }
     }
 }
