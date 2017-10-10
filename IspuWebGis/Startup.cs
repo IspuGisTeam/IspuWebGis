@@ -53,6 +53,9 @@ namespace IspuWebGis
                     name: "spa-fallback",
                     defaults: new { controller = "Home", action = "Index" });
             });
+
+            DataAccess.Repository.IRepository<DataAccess.Model.Point> rep = new DataAccess.Repository.PointRepository();
+            rep.GetAll();
         }
     }
 }
