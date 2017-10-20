@@ -7,6 +7,9 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using DAL;
+
 
 namespace IspuWebGis
 {
@@ -14,7 +17,19 @@ namespace IspuWebGis
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+
+            DAL.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
+            var host = BuildWebHost(args);
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                
+            }
+
+            host.Run();
+
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

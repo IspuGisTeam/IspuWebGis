@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataAccess
+namespace BLLStandart
 {
     public class Class1
     {

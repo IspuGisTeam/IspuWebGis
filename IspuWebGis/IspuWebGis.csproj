@@ -26,6 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BLL\BLL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\components\esri-map\esri-map.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\esri-map\esri-map.service.ts" />
   </ItemGroup>
