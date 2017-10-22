@@ -1,4 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
+import { Point } from "../../classes/point";
 
 @Component({
     selector: 'app',
@@ -6,7 +7,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-    points: Array<String>
+    points: Array<Point> = [];
 
     mapInnerHeight: string;
     pointsContainer: HTMLElement | null;
@@ -26,9 +27,9 @@ export class AppComponent implements OnInit {
      */
     ngOnInit() {
         this.points = [];
-        for (var i = 0; i < 15; i++) {
-            this.points.push(`Point # ${i}`);
-        }
+        this.points.push(new Point(1, 40.971, 56.997));
+        this.points.push(new Point(2, 41.071, 57.097));
+        this.points.push(new Point(3, 40.871, 56.897));
 
         let footer = document.getElementById("points-container");
         if (footer != null) this.pointsContainer = <HTMLElement | null>(footer.firstChild);
