@@ -21,17 +21,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\app\classes\geocode-params.ts" />
+    <None Remove="ClientApp\app\classes\point.ts" />
     <None Remove="ClientApp\app\components\esri-map\esri-map.component.ts" />
     <None Remove="ClientApp\app\components\esri-map\esri-map.service.ts" />
+    <None Remove="ClientApp\app\services\geocoder.service.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj" />
   </ItemGroup>
-
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\app\classes\geocode-params.ts" />
+    <TypeScriptCompile Include="ClientApp\app\classes\point.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\esri-map\esri-map.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\esri-map\esri-map.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\geocoder.service.ts" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">
