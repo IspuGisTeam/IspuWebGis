@@ -5,23 +5,21 @@ import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './components/app/app.component';
-import { NavMenuComponent } from './components/navmenu/navmenu.component';
-import { HomeComponent } from './components/home/home.component';
-import { FetchDataComponent } from './components/fetchdata/fetchdata.component';
-import { CounterComponent } from './components/counter/counter.component';
-
+import { TasksContainerComponent } from './components/tasks-container/tasks-container.component';
+import { PointsContainerComponent } from './components/points-container/points-container.component';
+import { PointItemComponent } from './components/point-item/point-item.component';
 import { EsriLoaderModule } from 'angular-esri-loader';
 import { EsriMapService } from './components/esri-map/esri-map.service';
 import { EsriMapComponent } from './components/esri-map/esri-map.component';
+import { GeocoderService } from './services/geocoder.service';
 
 @NgModule({
     declarations: [
         AppComponent,
         EsriMapComponent,
-        NavMenuComponent,
-        CounterComponent,
-        FetchDataComponent,
-        HomeComponent
+        TasksContainerComponent,
+        PointsContainerComponent,
+        PointItemComponent
     ],
     imports: [
         CommonModule,
@@ -29,15 +27,13 @@ import { EsriMapComponent } from './components/esri-map/esri-map.component';
         FormsModule,
         EsriLoaderModule,
         RouterModule.forRoot([
-            { path: '', redirectTo: 'home', pathMatch: 'full' },
-            { path: 'home', component: HomeComponent },
-            { path: 'counter', component: CounterComponent },
-            { path: 'fetch-data', component: FetchDataComponent },
-            { path: '**', redirectTo: 'home' }
+            { path: '**', redirectTo: '' },
+            { path: '', component: AppComponent }
         ])
     ],
     providers: [
-        EsriMapService
+        EsriMapService,
+        GeocoderService
     ]
 })
 export class AppModuleShared {

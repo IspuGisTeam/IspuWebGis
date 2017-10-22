@@ -1,0 +1,15 @@
+﻿.point-label {
+    font-weight: bold;
+    width: 5%;
+    margin: 2px 0;
+}
+
+.address-input {
+    width: 50%;
+    margin: 2px 1%;
+}
+
+.address-coordinates {
+    width: 20%;
+    margin: 2px 1%;
+}
