@@ -14,7 +14,6 @@ export class EsriMapComponent implements OnInit {
     @Output() centerChange: EventEmitter<__esri.Point> = new EventEmitter<__esri.Point>();
     private _mapViewProperties: __esri.MapViewProperties;
     private _observableSubscriptions: Subscription[] = [];
-
     constructor(private esriMapService: EsriMapService ) { }
 
     ngOnInit() {
@@ -38,7 +37,7 @@ export class EsriMapComponent implements OnInit {
             });
 
     }
-
+    
     private _handleMapCenterChange() {
         const subscribe = this.esriMapService.subscribeToMapEvent<__esri.MapViewDragEvent>('drag').subscribe(() => {
             this.esriMapService.getCenter().then((center: __esri.Point) => {
@@ -49,14 +48,6 @@ export class EsriMapComponent implements OnInit {
         this._observableSubscriptions.push(subscribe);
     }
 
-    createMarkers() {
-        var x = <number>this.center.longitude;
-        var y = <number>this.center.latitude;
-        var arr = new Array();
-        arr = this.esriMapService.addMarkers(x, y);
-        alert(arr[0]);
-        alert(arr[1]);
-        alert(arr[2]);
-    }
+    
 }
 

@@ -6,6 +6,7 @@ import { Observer } from "rxjs/Observer";
 
 @Injectable()
 export class EsriMapService {
+    
     private readonly arcgisJSAPIUrl = 'https://js.arcgis.com/4.5/';
     private _mapView: __esri.MapView;
     public baseMap: __esri.Map;
@@ -16,9 +17,12 @@ export class EsriMapService {
             return this.esriLoaderService.loadModules([
                 'esri/Map',
                 'esri/views/MapView',
-                "esri/Basemap"
-            ]).then(([Map, MapView, Basemap]: [__esri.MapConstructor, __esri.MapViewConstructor, __esri.BasemapConstructor]) => {    
-
+                "esri/Basemap",
+            ]).then(([Map, MapView, Basemap]:
+                [__esri.MapConstructor,
+                __esri.MapViewConstructor,
+                __esri.BasemapConstructor
+            ]) => {    
                 var mapProperties: __esri.MapProperties = {};
                 let basemap: __esri.Basemap = Basemap.fromId('streets');
                 mapProperties.basemap = basemap;          
@@ -46,36 +50,42 @@ export class EsriMapService {
             });
         });
     }
-
-    addMarkers(x: number, y: number): number[] {
+    
+    addMarkers(x: number, y: number): number[] { // method creates three random markers within Ivanovo
         var arrayOfMarkers = new Array();
-        this.esriLoaderService.load({ url: 'https://js.arcgis.com/3.22/' }).then(() => {
+        this.esriLoaderService.load({ url: this.arcgisJSAPIUrl }).then(() => {
             this.esriLoaderService.loadModules([
                 'esri/symbols/SimpleMarkerSymbol',
-                'esri/layers/GraphicsLayer',
-                'esri/renderers/SimpleRenderer',
-                'esri/Map',
-                'esri/Color',
-                'esri/symbols/SimpleLineSymbol',
-                'esri/geometry/Point'
-            ]).then(([MarkerSymbol, GraphicsLayer, Renderer, Map, Color, LineSymbol, Point]) => {
-
+                "esri/Graphic",
+            ]).then(([SimpleMarkerSymbol, Graphic]) => {
+                this._mapView.graphics.removeAll();
+                var new_x = x, new_y = y;
                 for (var i = 0; i < 3; i++) {
-                    var marker = new MarkerSymbol();
-                    marker.style = MarkerSymbol.STYLE_CIRCLE;
-                    marker.size = 20;
-                    marker.xoffset = x + Math.random();
-                    marker.yoffset = y + Math.random();
-                    marker.color = new Color("blue");
-                    marker.outline = new LineSymbol();
-                    var layer = new GraphicsLayer();
-                    var renderer = new Renderer(marker);
-                    //layer.setRenderer(renderer); // !
-                    //var map = new Map();
-                    //map.addLayer(layer);
-                    arrayOfMarkers[i] = new Point(marker.xoffset, marker.yoffset);
-                }
-                alert("done");
+                    new_x = Math.random() * ((x + 0.021) - (x - 0.027)) + (x - 0.027);
+                    new_y = Math.random() * ((y + 0.021) - (y - 0.027)) + (y - 0.027);
+                    var p = [new_x, new_y];
+                    var point = {
+                        type: "point", // autocasts as new Point()
+                        longitude: new_x,
+                        latitude: new_y,
+                    };
+                    var pointGraphic = new Graphic({
+                        geometry: point,
+                        symbol: {
+                            type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+                            style: "circle",
+                            color: "#D41F67",
+                            size: 16,
+                            xoffset: new_x,
+                            yoffset: new_y,
+                        }
+                    });
+                    this._mapView.graphics.add(pointGraphic);
+                    arrayOfMarkers[i] = p;
+                    new_x = x;
+                    new_y = y;
+
+                }               
             });
         });
         return arrayOfMarkers;
