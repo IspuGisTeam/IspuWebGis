@@ -12,9 +12,13 @@ export class EsriMapComponent implements OnInit {
     @ViewChild('map') mapRef: ElementRef;
     @Input() center: __esri.PointProperties;
     @Output() centerChange: EventEmitter<__esri.Point> = new EventEmitter<__esri.Point>();
+
+    @Input() points: Array<String>;
+
     private _mapViewProperties: __esri.MapViewProperties;
     private _observableSubscriptions: Subscription[] = [];
-    constructor(private esriMapService: EsriMapService ) { }
+
+    constructor(private esriMapService: EsriMapService) { }
 
     ngOnInit() {
         this._initializeMap();
@@ -35,9 +39,8 @@ export class EsriMapComponent implements OnInit {
                 console.log('MapView is loaded');
                 this._handleMapCenterChange();
             });
-
     }
-    
+
     private _handleMapCenterChange() {
         const subscribe = this.esriMapService.subscribeToMapEvent<__esri.MapViewDragEvent>('drag').subscribe(() => {
             this.esriMapService.getCenter().then((center: __esri.Point) => {
@@ -47,7 +50,4 @@ export class EsriMapComponent implements OnInit {
         });
         this._observableSubscriptions.push(subscribe);
     }
-
-    
 }
-

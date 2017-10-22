@@ -1,0 +1,42 @@
+.footer-container,
+.footer {
+    background: ghostwhite;
+    box-shadow: 4px 0px 5px #888888;
+}
+
+.points-list-container {
+    min-height: 100px;
+    max-height: 120px;
+    overflow-y: auto;
+    background: inherit;
+}
+
+.btn-list-container {
+    background: inherit;
+}
+
+@media (max-height: 440px) {
+    .points-list-container,
+    .points-list {
+        height: 0;
+        display: none;
+    }
+
+    .btn-list-container {
+        width: 100%;
+    }
+
+        .btn-list-container .row {
+            display: inline-block;
+            text-align: center;
+            width: calc(33% - 20px);
+            margin: 9px;
+        }
+}
+
+.btn {
+    text-align: center;
+    width: calc(100% - 7px);
+    margin: 0 7px 7px;
+    padding: 6px 2px;
+}

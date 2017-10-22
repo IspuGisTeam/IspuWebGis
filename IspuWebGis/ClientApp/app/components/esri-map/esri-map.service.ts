@@ -3,38 +3,37 @@ import { Http, Headers } from '@angular/http';
 import { EsriLoaderService } from 'angular-esri-loader';
 import { Observable } from "rxjs/Observable";
 import { Observer } from "rxjs/Observer";
+import { Point } from "../../classes/point";
 
 @Injectable()
 export class EsriMapService {
-    
     private readonly arcgisJSAPIUrl = 'https://js.arcgis.com/4.5/';
     private _mapView: __esri.MapView;
-    public baseMap: __esri.Map;
+
     constructor(private esriLoaderService: EsriLoaderService, private _zone: NgZone) { }
 
     createMap(mapViewProperties: __esri.MapViewProperties): Promise<void> {
-        return this.esriLoaderService.load({ url: this.arcgisJSAPIUrl }).then(() => {
+        return this.esriLoaderService.load({
+            url: this.arcgisJSAPIUrl
+        }).then(() => {
             return this.esriLoaderService.loadModules([
                 'esri/Map',
                 'esri/views/MapView',
-                "esri/Basemap",
-            ]).then(([Map, MapView, Basemap]:
-                [__esri.MapConstructor,
-                __esri.MapViewConstructor,
-                __esri.BasemapConstructor
-            ]) => {    
-                var mapProperties: __esri.MapProperties = {};
+                "esri/Basemap"
+            ]).then(([Map, MapView, Basemap]: [__esri.MapConstructor, __esri.MapViewConstructor, __esri.BasemapConstructor]) => {
+
+                let mapProperties: __esri.MapProperties = {};
                 let basemap: __esri.Basemap = Basemap.fromId('streets');
-                mapProperties.basemap = basemap;          
+                mapProperties.basemap = basemap;
                 let createdMap = new Map(mapProperties);
+
                 mapViewProperties.zoom = 16;
                 mapViewProperties.map = createdMap;
-                this.baseMap = createdMap;
+
                 this._mapView = new MapView(mapViewProperties);
                 return;
             });
         });
-       
     }
 
     getCenter(): Promise<__esri.Point> {
@@ -50,7 +49,7 @@ export class EsriMapService {
             });
         });
     }
-    
+
     addMarkers(x: number, y: number): number[] { // method creates three random markers within Ivanovo
         var arrayOfMarkers = new Array();
         this.esriLoaderService.load({ url: this.arcgisJSAPIUrl }).then(() => {
@@ -63,7 +62,7 @@ export class EsriMapService {
                 for (var i = 0; i < 3; i++) {
                     new_x = Math.random() * ((x + 0.021) - (x - 0.027)) + (x - 0.027);
                     new_y = Math.random() * ((y + 0.021) - (y - 0.027)) + (y - 0.027);
-                    var p = [new_x, new_y];
+                    var p = new Point(100, new_x, new_y);
                     var point = {
                         type: "point", // autocasts as new Point()
                         longitude: new_x,
@@ -84,11 +83,9 @@ export class EsriMapService {
                     arrayOfMarkers[i] = p;
                     new_x = x;
                     new_y = y;
-
-                }               
+                }
             });
         });
         return arrayOfMarkers;
     }
 }
-

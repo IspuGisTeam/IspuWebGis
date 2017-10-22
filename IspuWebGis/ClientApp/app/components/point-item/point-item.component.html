@@ -1,0 +1,16 @@
+﻿<div class="form-group">
+    <span class="point-label">{{point.id}}</span>
+
+    <input type="text"
+           placeholder="Введите здесь адрес..."
+           [attr.list]="collectionId()" 
+           class="address-input"
+           [(ngModel)]="point.address" 
+           (ngModelChange)="solveGeocoding($event);" />
+    <datalist [attr.id]="collectionId()" class="address-input">
+        <option *ngFor="let a of potentialAddresses" value="{{a?.address}}">{{a?.address}}</option>
+    </datalist>
+
+    <input class="address-coordinates" type="text" [(ngModel)]="point.latitude" readonly />
+    <input class="address-coordinates" type="text" [(ngModel)]="point.longitude" readonly />
+</div>
