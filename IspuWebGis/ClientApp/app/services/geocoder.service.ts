@@ -14,7 +14,8 @@
 
      getGeocode(paramsGeocoding: GeocodeParams) {
          let link = this.GEOCODE_URL +
-             `?SingleLine=${paramsGeocoding.location}&f=${paramsGeocoding.format}` +
+             `?City=Иваново&Region=Ивановская область` +
+             `&Address=${paramsGeocoding.location}&f=${paramsGeocoding.format}` +
              `&category=&outFields=*&forStorage=false`;
          return this.http.get(link);
      }
