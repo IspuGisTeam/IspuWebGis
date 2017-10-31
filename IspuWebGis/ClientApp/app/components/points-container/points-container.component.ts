@@ -8,13 +8,14 @@ import { AppComponent } from '../app/app.component';
     templateUrl: './points-container.component.html',
     styleUrls: ['./points-container.component.css']
 })
+
 export class PointsContainerComponent {
-    @Input() points: Array<Point>;
+    @Input() points: Array<Point>; // here array of markers
     constructor(private esriMap: EsriMapService, private appComp: AppComponent) { }
 
-    addPoint() {
+    async addPoint() { 
         var x = <number>this.appComp.center.longitude;
         var y = <number>this.appComp.center.latitude;
-        var arrayOfCoordinates = this.esriMap.addMarkers(x, y); // array of three markers` points (type: Point)
+        this.points = await this.esriMap.addMarkers(x, y); // array of three markers` points (type: Point)
     }
 }
