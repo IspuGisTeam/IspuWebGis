@@ -50,42 +50,46 @@ export class EsriMapService {
         });
     }
 
-    addMarkers(x: number, y: number): number[] { // method creates three random markers within Ivanovo
-        var arrayOfMarkers = new Array();
-        this.esriLoaderService.load({ url: this.arcgisJSAPIUrl }).then(() => {
-            this.esriLoaderService.loadModules([
-                'esri/symbols/SimpleMarkerSymbol',
-                "esri/Graphic",
-            ]).then(([SimpleMarkerSymbol, Graphic]) => {
-                this._mapView.graphics.removeAll();
-                var new_x = x, new_y = y;
-                for (var i = 0; i < 3; i++) {
-                    new_x = Math.random() * ((x + 0.021) - (x - 0.027)) + (x - 0.027);
-                    new_y = Math.random() * ((y + 0.021) - (y - 0.027)) + (y - 0.027);
-                    var p = new Point(100, new_x, new_y);
-                    var point = {
-                        type: "point", // autocasts as new Point()
-                        longitude: new_x,
-                        latitude: new_y,
-                    };
-                    var pointGraphic = new Graphic({
-                        geometry: point,
-                        symbol: {
-                            type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
-                            style: "circle",
-                            color: "#D41F67",
-                            size: 16,
-                            xoffset: new_x,
-                            yoffset: new_y,
+    addMarkers(x: number, y: number): Promise<Point[]> { // method creates three random markers within Ivanovo       
+        return this.esriLoaderService
+            .load({ url: this.arcgisJSAPIUrl })
+            .then(() => {
+                return this.esriLoaderService
+                    .loadModules([
+                        'esri/symbols/SimpleMarkerSymbol',
+                        "esri/Graphic",
+                    ])
+                    .then(([SimpleMarkerSymbol, Graphic]) => {
+                        var arrayOfMarkers = new Array<Point>();
+                        this._mapView.graphics.removeAll();                      
+                        var new_x = x, new_y = y;
+                        for (var i = 0; i < 3; i++) {
+                            new_x = Math.random() * ((x + 0.021) - (x - 0.027)) + (x - 0.027);
+                            new_y = Math.random() * ((y + 0.021) - (y - 0.027)) + (y - 0.027);
+                            var p = new Point(100, new_x, new_y);
+                            var point = {
+                                type: "point", // autocasts as new Point()
+                                longitude: new_x,
+                                latitude: new_y,
+                            };
+                            var pointGraphic = new Graphic({
+                                geometry: point,
+                                symbol: {
+                                    type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+                                    style: "circle",
+                                    color: "#D41F67",
+                                    size: 16,
+                                    xoffset: new_x,
+                                    yoffset: new_y,
+                                }
+                            });
+                            this._mapView.graphics.add(pointGraphic);
+                            arrayOfMarkers[i] = p;
+                            new_x = x;
+                            new_y = y;
                         }
+                        return arrayOfMarkers;
                     });
-                    this._mapView.graphics.add(pointGraphic);
-                    arrayOfMarkers[i] = p;
-                    new_x = x;
-                    new_y = y;
-                }
             });
-        });
-        return arrayOfMarkers;
     }
 }
