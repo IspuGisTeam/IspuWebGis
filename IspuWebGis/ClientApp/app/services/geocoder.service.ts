@@ -20,6 +20,19 @@
          return this.http.get(link);
      }
 
+     getReverseGeocode(paramsMy: GeocodeParams) {
+         let link = "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?location=" +
+             paramsMy.location +
+             "&f=" +
+             paramsMy.format;
+
+         //return this.http.get(link);
+         // return this.http.get(link).map(resp => console.log(resp));
+         return this.http.get(link).map((resp: any) => JSON.parse(resp["_body"]));
+
+     }
+
+
      private handleError(error: any): Promise<any> {
          console.error('Error', error); // for demo purposes only
          return Promise.reject(error.message || error);
