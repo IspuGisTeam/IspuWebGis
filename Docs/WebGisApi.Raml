@@ -8,16 +8,20 @@ title: WebApi for WebGis App
         application/json:
           example: |
             {
-              "points": [
+			  "startPoint": {25.3, 73.6}
+              "checkpoints": [
                 {
-                  "address":"My address",
-                  "x":123,
-                  "y":20,
-                  "rank": 2
-                }, <..>
+                  "X":25,
+                  "Y":15.2,
+                },
+				{
+                  "X":18,
+                  "Y":256,
+                },
+				<..>
               ]
               "time":"12-04-2020 23:11",
-              "mode":"onFoot",
+              "mode":"shortRoute", #(or FastRoute)
               "name":"Home - Work", 
               "UserId": "3123123",
               "IsFavourite": false
@@ -29,12 +33,24 @@ title: WebApi for WebGis App
               example: |
                 {
                   "taskId":"23213123123"
-                  "route":"23-231-323-1231-32"
                   "time":"12-04-2020 23:11",
-                  "mode":"onFoot",
                   "name":"Home - Work"
                   "UserId": "3123123",
-                  "IsFavourite": false
+                  "IsFavourite": false,
+				  "routeResult": {
+					"mode": "fastRoute",
+					"totalLength": 1358.9,
+					"totalTime": 78.2,
+					"checkpoints": [
+					  {
+						"startPoint": {25.3, 73.6},
+						"finishPoint": {25, 15.2},
+						"WKTPath": [ {1,2}, {5,7}, {8,9} ],
+						"length": 118,
+						"time": 5.2
+					  }
+					]				
+				  }
                 }
 /api/history:
   get:
