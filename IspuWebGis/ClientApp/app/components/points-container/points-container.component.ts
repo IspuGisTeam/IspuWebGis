@@ -24,6 +24,10 @@ export class PointsContainerComponent {
         this.points = this.getPointsReverseGeoCode(this.points);
     }
 
+    async makeWay() {
+        this.esriMap.connectMarkers(this.points);
+    }
+
     getPointsReverseGeoCode(points: Point[]): Point[] {
         console.log(points.length);
         for (var i = 0; i < points.length; i++) {
