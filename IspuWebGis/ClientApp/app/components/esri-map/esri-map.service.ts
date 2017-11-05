@@ -79,8 +79,10 @@ export class EsriMapService {
                                     style: "circle",
                                     color: "#D41F67",
                                     size: 16,
-                                    xoffset: new_x,
-                                    yoffset: new_y,
+
+                                    // Причина бага с неверным отображением точек
+                                    //xoffset: new_x,
+                                    //yoffset: new_y,
                                 }
                             });
                             this._mapView.graphics.add(pointGraphic);
@@ -89,6 +91,48 @@ export class EsriMapService {
                             new_y = y;
                         }
                         return arrayOfMarkers;
+                    });
+            });
+    }
+
+    connectMarkers(points: Point[]): Promise<any> {
+        return this.esriLoaderService
+            .load({ url: this.arcgisJSAPIUrl })
+            .then(() => {
+                return this.esriLoaderService
+                    .loadModules([
+                        "esri/geometry/Polyline",
+                        "esri/symbols/SimpleLineSymbol",
+                        "esri/Graphic"
+                    ])
+                    .then(([Polyline, SimpleLineSymbol, Graphic]) => {
+                        if (points == null || points.length == 0) {
+                            return;
+                        }
+                        let vertices = new Array<number[]>();
+                        points.forEach(point => {
+                            vertices.push([point.latitude, point.longitude]);
+                        });                
+                        
+                        let polyline = new Polyline({                           
+                            paths: vertices,
+                        });
+
+                        let symbol = new SimpleLineSymbol({
+                            type: "simple-line", // autocasts as SimpleLineSymbol
+                            color: "#D41F67",
+                            width: "2px"
+                        });
+
+                        let graphic = new Graphic({
+                            geometry: polyline,
+                            symbol: symbol,
+                            cap: "round"
+                        });
+
+                        this._mapView.graphics.add(graphic)
+
+                        return;
                     });
             });
     }
