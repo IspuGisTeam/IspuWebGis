@@ -29,6 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\classes\geocode-params.ts" />
     <TypeScriptCompile Include="ClientApp\app\classes\point.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\esri-map\esri-map.component.ts" />
