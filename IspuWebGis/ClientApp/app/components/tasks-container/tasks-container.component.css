@@ -1,6 +1,7 @@
 .navbar {
     background: ghostwhite;
     box-shadow: 4px 0px 5px #888888;
+    margin: 0;
 }
 
 li .glyphicon {
@@ -14,12 +15,17 @@ li .glyphicon {
     left: 0;
     right: 0;
     z-index: 1;
+    overflow-y: scroll;
 }
 
 .btn-add {
     float: right;
     padding: 10px 15px;
     margin: 20px;
+}
+
+.btn-full {
+    width: 100%;
 }
 
 @media (min-width: 768px) {

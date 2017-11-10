@@ -15,6 +15,20 @@ export class TasksContainerComponent implements OnInit {
     constructor(private taskService: TaskService) {
     }
 
+    ngOnInit() {
+        this.taskService.getAllTasks()
+            .then((ta: Task[]) => this.tasksLoadedSuccess(ta))
+            .catch((err: any) => this.tasksLoadedFail(err));
+    }
+
+    private tasksLoadedSuccess(tasks: Task[]) {
+        this.tasks = tasks;
+    }
+
+    private tasksLoadedFail(err: any) {
+        console.error("Tasks loading failed\n" + err);
+    }
+
     addTask() {
         if (this.pressOnAddButton == false) {
             this.pressOnAddButton = !this.pressOnAddButton;
@@ -29,9 +43,5 @@ export class TasksContainerComponent implements OnInit {
 
     removeTask(task: Task) {
         this.taskService.removeTask(task);
-    }
-
-    ngOnInit() {
-        this.tasks = this.taskService.getAllTasks();
     }
 }

@@ -14,11 +14,20 @@ namespace IspuWebGis.Controllers
         [HttpGet]
         public Object Get()
         {
-            var points = new List<CustomPoint>();
-            points.Add(new CustomPoint { id = 2, address = "address_text", latitude = 50, longitude = 45 });
-            var task = new Task { id = 5, name = "task_name", timeOfCreation = DateTime.Now, points = points};
-            return new {tasks=new Task[] { task } };
+            var points1 = new List<CustomPoint>();
+            points1.Add(new CustomPoint { id = 1, address = "address_text_1", latitude = 40.971f, longitude = 56.997f });
+            points1.Add(new CustomPoint { id = 2, address = "address_text_2", latitude = 41.071f, longitude = 56.997f });
+            points1.Add(new CustomPoint { id = 3, address = "address_text_3", latitude = 40.971f, longitude = 57.097f });
+            var task1 = new Task { id = 1, name = "Triangle points", timeOfCreation = DateTime.Now, points = points1};
+
+            var points2 = new List<CustomPoint>();
+            points2.Add(new CustomPoint { id = 4, address = "address_text_4", latitude = 40.871f, longitude = 56.897f });
+            points2.Add(new CustomPoint { id = 5, address = "address_text_5", latitude = 40.971f, longitude = 56.997f });
+            var task2 = new Task { id = 2, name = "Line points", timeOfCreation = DateTime.Now, points = points2 };
+
+            return new {tasks=new Task[] { task1, task2 } };
         }
+
         [HttpPost]
         public Task CreateTask([FromBody]Task task)
         {
