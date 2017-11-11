@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Point } from "../../classes/point";
+import { Task } from "../../classes/task";
 
 @Component({
     selector: 'app',
@@ -54,5 +55,9 @@ export class AppComponent implements OnInit {
                 this.mapInnerHeight = window.innerHeight.toString();
             }
         }
+    }
+
+    onTaskChanged(task: Task) {
+        this.points = task.points;
     }
 }

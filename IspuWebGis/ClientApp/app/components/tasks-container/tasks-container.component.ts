@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TaskService } from '../../services/task.service';
 import { Task } from '../../classes/task';
 
@@ -6,13 +6,16 @@ import { Task } from '../../classes/task';
     selector: 'tasks-container',
     templateUrl: './tasks-container.component.html',
     styleUrls: ['./tasks-container.component.css'],
-    providers: [TaskService]
+    providers: [TaskService],
+    outputs: ['taskSelected']
 })
 export class TasksContainerComponent implements OnInit {
     tasks: Task[] = [];
     pressOnAddButton: boolean = false;
+    @Output() taskSelected: EventEmitter<Task>;
 
     constructor(private taskService: TaskService) {
+        this.taskSelected = new EventEmitter<Task>(true);
     }
 
     ngOnInit() {
@@ -43,5 +46,9 @@ export class TasksContainerComponent implements OnInit {
 
     removeTask(task: Task) {
         this.taskService.removeTask(task);
+    }
+
+    selectTask(t: Task) {
+        this.taskSelected.emit(t);
     }
 }
