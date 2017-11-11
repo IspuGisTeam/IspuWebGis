@@ -54,7 +54,6 @@ export class EsriMapService {
         return this.esriLoaderService
             .load({ url: this.arcgisJSAPIUrl })
             .then(() => {
-                console.log("add");
                 return this.esriLoaderService
                     .loadModules([
                         'esri/symbols/SimpleMarkerSymbol',
