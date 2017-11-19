@@ -3,6 +3,7 @@
 import { GeocoderService } from "../../services/geocoder.service";
 import { Point } from "../../classes/point";
 import { GeocodeParams } from "../../classes/geocode-params";
+import { EsriMapService } from '../esri-map/esri-map.service';
 
 @Component({
     selector: 'point-item',
@@ -14,7 +15,7 @@ export class PointItemComponent implements OnInit {
 
     potentialAddresses: Point[];
 
-    constructor(private _geocodeService: GeocoderService) {
+    constructor(private esriMap: EsriMapService, private _geocodeService: GeocoderService) {
         this.potentialAddresses = [];
     }
 
@@ -36,6 +37,7 @@ export class PointItemComponent implements OnInit {
         var selectedIndex = this.potentialAddresses.map(pa => pa.address).findIndex(addr => addr === ev);
         if (selectedIndex !== -1) {
             this.point = this.potentialAddresses[selectedIndex];
+            this.esriMap.addMarker(this.point.latitude, this.point.longitude);
         }
 
         this.potentialAddresses = [];
