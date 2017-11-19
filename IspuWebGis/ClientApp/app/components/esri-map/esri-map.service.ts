@@ -129,6 +129,44 @@ export class EsriMapService {
                     });
             });
     }
+    /**
+     * Add simple marker and delete other things on map(issue!)
+     */
+    addMarker(latitude: number, longitude: number): Promise<any> {
+        //alert(longitude+","+latitude);
+        return this.esriLoaderService
+            .load({ url: this.arcgisJSAPIUrl })
+            .then(() => {
+                return this.esriLoaderService
+                    .loadModules([
+                        'esri/symbols/SimpleMarkerSymbol',
+                        "esri/Graphic",
+                    ])
+                    .then(([SimpleMarkerSymbol, Graphic]) => {
+                        this._mapView.graphics.removeAll(); //dunno how to remove single shit.
+
+                        //var p = new Point(0, longitude, latitude);
+                        var point = {
+                            type: "point", // autocasts as new Point()
+                            longitude: latitude,
+                            latitude: longitude,
+                        };
+                        var pointGraphic = new Graphic({
+                            geometry: point,
+                            symbol: {
+                                type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+                                style: "circle",
+                                color: "#D41F67",
+                                size: 16,
+                            }
+                        });
+                        this._mapView.graphics.add(pointGraphic);
+
+
+                        return;
+                    });
+            });
+    }
 
     connectMarkers(points: Point[]): Promise<any> {
         return this.esriLoaderService
