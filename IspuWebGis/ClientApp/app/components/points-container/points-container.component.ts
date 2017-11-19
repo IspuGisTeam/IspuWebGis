@@ -35,11 +35,9 @@ export class PointsContainerComponent {
             let param = new GeocodeParams(loc);
             let index = i;
             this.geocodeService.getReverseGeocode(param).subscribe((data) => {
-                //console.log(data.address.ShortLabel);
                 if (data.address)
 
                     points[index].address = data.address.ShortLabel;
-                //console.log(data.address.ShortLabel);
             });
 
         }
