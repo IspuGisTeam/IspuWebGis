@@ -1,5 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
+import { EsriMapService } from "../esri-map/esri-map.service";
 import { Point } from "../../classes/point";
+import { Task } from "../../classes/task";
 
 @Component({
     selector: 'app',
@@ -38,6 +40,9 @@ export class AppComponent implements OnInit {
         this.onWindowResize();
     }
 
+    constructor(private mapService: EsriMapService) {
+    }
+
     private onWindowResize() {
         if (this.pointsContainer != null) {
             let footerHeight = +this.pointsContainer.clientHeight;
@@ -54,5 +59,11 @@ export class AppComponent implements OnInit {
                 this.mapInnerHeight = window.innerHeight.toString();
             }
         }
+    }
+
+    onTaskChanged(task: Task) {
+        this.points = task.points;
+        this.mapService.updateMarkers(this.points);
+        this.mapService.connectMarkers(this.points);
     }
 }

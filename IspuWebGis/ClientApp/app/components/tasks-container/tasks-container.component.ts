@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TaskService } from '../../services/task.service';
 import { Task } from '../../classes/task';
 
@@ -6,13 +6,30 @@ import { Task } from '../../classes/task';
     selector: 'tasks-container',
     templateUrl: './tasks-container.component.html',
     styleUrls: ['./tasks-container.component.css'],
-    providers: [TaskService]
+    providers: [TaskService],
+    outputs: ['taskSelected']
 })
 export class TasksContainerComponent implements OnInit {
     tasks: Task[] = [];
     pressOnAddButton: boolean = false;
+    @Output() taskSelected: EventEmitter<Task>;
 
     constructor(private taskService: TaskService) {
+        this.taskSelected = new EventEmitter<Task>(true);
+    }
+
+    ngOnInit() {
+        this.taskService.getAllTasks()
+            .then((ta: Task[]) => this.tasksLoadedSuccess(ta))
+            .catch((err: any) => this.tasksLoadedFail(err));
+    }
+
+    private tasksLoadedSuccess(tasks: Task[]) {
+        this.tasks = tasks;
+    }
+
+    private tasksLoadedFail(err: any) {
+        console.error("Tasks loading failed\n" + err);
     }
 
     addTask() {
@@ -31,7 +48,7 @@ export class TasksContainerComponent implements OnInit {
         this.taskService.removeTask(task);
     }
 
-    ngOnInit() {
-        this.tasks = this.taskService.getAllTasks();
+    selectTask(t: Task) {
+        this.taskSelected.emit(t);
     }
 }

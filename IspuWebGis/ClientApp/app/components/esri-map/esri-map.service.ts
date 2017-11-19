@@ -50,6 +50,41 @@ export class EsriMapService {
         });
     }
 
+    updateMarkers(points: Point[]) {
+        return this.esriLoaderService
+            .load({ url: this.arcgisJSAPIUrl })
+            .then(() => {
+                return this.esriLoaderService
+                    .loadModules([
+                        'esri/symbols/SimpleMarkerSymbol',
+                        "esri/Graphic",
+                    ])
+                    .then(([SimpleMarkerSymbol, Graphic]) => {
+                        this._mapView.graphics.removeAll();  
+
+                        for (var i = 0; i < points.length; i++) {
+                            let p: Point = points[i];
+
+                            var point = {
+                                type: "point", // autocasts as new Point()
+                                longitude: p.latitude,
+                                latitude: p.longitude,
+                            };
+                            var pointGraphic = new Graphic({
+                                geometry: point,
+                                symbol: {
+                                    type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+                                    style: "circle",
+                                    color: "#D41F67",
+                                    size: 16,
+                                }
+                            });
+                            this._mapView.graphics.add(pointGraphic);
+                        }
+                    });
+            });
+    }
+
     addMarkers(x: number, y: number): Promise<Point[]> { // method creates three random markers within Ivanovo       
         return this.esriLoaderService
             .load({ url: this.arcgisJSAPIUrl })
