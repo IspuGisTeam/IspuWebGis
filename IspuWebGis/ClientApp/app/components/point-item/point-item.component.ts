@@ -1,4 +1,4 @@
-﻿import { Component, Input, OnInit } from '@angular/core';
+﻿import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 
 import { GeocoderService } from "../../services/geocoder.service";
 import { Point } from "../../classes/point";
@@ -12,11 +12,13 @@ import { EsriMapService } from '../esri-map/esri-map.service';
 })
 export class PointItemComponent implements OnInit {
     @Input() point: Point;
+    @Output() askedRedraw: EventEmitter<Point>;
 
     potentialAddresses: Point[];
 
     constructor(private esriMap: EsriMapService, private _geocodeService: GeocoderService) {
         this.potentialAddresses = [];
+        this.askedRedraw = new EventEmitter<Point>(true);
     }
 
     ngOnInit() {
@@ -37,7 +39,8 @@ export class PointItemComponent implements OnInit {
         var selectedIndex = this.potentialAddresses.map(pa => pa.address).findIndex(addr => addr === ev);
         if (selectedIndex !== -1) {
             this.point = this.potentialAddresses[selectedIndex];
-            this.esriMap.addMarker(this.point.latitude, this.point.longitude);
+            //this.esriMap.addMarker(this.point.latitude, this.point.longitude);
+            this.askRedraw(this.point);
         }
 
         this.potentialAddresses = [];
@@ -56,5 +59,9 @@ export class PointItemComponent implements OnInit {
                 }
             }
         });
+    }
+
+    askRedraw(point:Point) {
+        this.askedRedraw.emit(point);
     }
 }

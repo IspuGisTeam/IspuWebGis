@@ -101,8 +101,9 @@ export class EsriMapService {
                         for (var i = 0; i < 3; i++) {
                             new_x = Math.random() * ((x + 0.021) - (x - 0.027)) + (x - 0.027);
                             new_y = Math.random() * ((y + 0.021) - (y - 0.027)) + (y - 0.027);
-                            var p = new Point(100, new_x, new_y);
+                            var p = new Point(i, new_x, new_y);
                             var point = {
+                                
                                 type: "point", // autocasts as new Point()
                                 longitude: new_x,
                                 latitude: new_y,
