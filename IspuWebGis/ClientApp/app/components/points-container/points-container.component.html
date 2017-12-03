@@ -3,7 +3,7 @@
         <div class="col-xs-9 points-list-container">
             <div class="container-fluid points-list">
                 <div class="row" *ngFor="let p of points">
-                    <point-item [point]="p"> Point here: {{p}} </point-item>
+                    <point-item  [point]="p" (askedRedraw)="onRedrawAsked($event)"> Point here: {{p}} </point-item>
                 </div>
             </div>
         </div>
