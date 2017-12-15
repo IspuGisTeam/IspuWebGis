@@ -12,6 +12,7 @@ import { EsriLoaderModule } from 'angular-esri-loader';
 import { EsriMapService } from './components/esri-map/esri-map.service';
 import { EsriMapComponent } from './components/esri-map/esri-map.component';
 import { GeocoderService } from './services/geocoder.service';
+import { TaskService } from './services/task.service';
 
 @NgModule({
     declarations: [
@@ -33,7 +34,8 @@ import { GeocoderService } from './services/geocoder.service';
     ],
     providers: [
         EsriMapService,
-        GeocoderService
+        GeocoderService,
+        TaskService
     ]
 })
 export class AppModuleShared {
