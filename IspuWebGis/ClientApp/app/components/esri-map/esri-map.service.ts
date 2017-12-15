@@ -4,13 +4,22 @@ import { EsriLoaderService } from 'angular-esri-loader';
 import { Observable } from "rxjs/Observable";
 import { Observer } from "rxjs/Observer";
 import { Point } from "../../classes/point";
+import { ClientPoint } from "../../classes/clientPoint";
+import { TaskRequest } from "../../classes/taskRequest";
+
+import { TaskService } from "../../services/task.service";
+
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class EsriMapService {
     private readonly arcgisJSAPIUrl = 'https://js.arcgis.com/4.5/';
     private _mapView: __esri.MapView;
 
-    constructor(private esriLoaderService: EsriLoaderService, private _zone: NgZone) { }
+    constructor(
+        private esriLoaderService: EsriLoaderService,
+        private _zone: NgZone,
+        private taskService: TaskService) { }
 
     createMap(mapViewProperties: __esri.MapViewProperties): Promise<void> {
         return this.esriLoaderService.load({
@@ -60,7 +69,7 @@ export class EsriMapService {
                         "esri/Graphic",
                     ])
                     .then(([SimpleMarkerSymbol, Graphic]) => {
-                        this._mapView.graphics.removeAll();  
+                        this._mapView.graphics.removeAll();
 
                         for (var i = 0; i < points.length; i++) {
                             let p: Point = points[i];
@@ -96,14 +105,14 @@ export class EsriMapService {
                     ])
                     .then(([SimpleMarkerSymbol, Graphic]) => {
                         var arrayOfMarkers = new Array<Point>();
-                        this._mapView.graphics.removeAll();                      
+                        this._mapView.graphics.removeAll();
                         var new_x = x, new_y = y;
                         for (var i = 0; i < 3; i++) {
                             new_x = Math.random() * ((x + 0.021) - (x - 0.027)) + (x - 0.027);
                             new_y = Math.random() * ((y + 0.021) - (y - 0.027)) + (y - 0.027);
                             var p = new Point(i, new_x, new_y);
                             var point = {
-                                
+
                                 type: "point", // autocasts as new Point()
                                 longitude: new_x,
                                 latitude: new_y,
@@ -168,8 +177,44 @@ export class EsriMapService {
                     });
             });
     }
+    connectMarkers(points: Point[]) {
+        this.esriLoaderService
+            .load({ url: this.arcgisJSAPIUrl })
+            .then(() => {
+                return this.esriLoaderService
+                    .loadModules([
+                        "esri/geometry/support/webMercatorUtils"
+                    ])
+            })
+            .then(([webMercatorUtils]) => {
 
-    connectMarkers(points: Point[]): Promise<any> {
+                let clientPoints = points.map(p => {
+                    var result = webMercatorUtils.lngLatToXY(p.latitude, p.longitude)
+                    var cp = new ClientPoint()
+                    cp.x = result[0];
+                    cp.y = result[1];
+                    return cp;
+                });
+
+                var task = new TaskRequest();
+                task.isFavourite = false;
+                task.startPoint = clientPoints[0];
+                clientPoints.shift();
+                task.checkpoints = clientPoints;
+                task.name = "Name name";
+                task.time = new Date();
+                task.userId = 1;
+                task.mode = "ShortRoute";
+
+                this.taskService.makeWay(task)
+                    .then(r => {
+                        this.connectClientPoints(r)
+                    });
+            });
+
+    }
+
+    connectClientPoints(points: ClientPoint[]): Promise<any> {
         return this.esriLoaderService
             .load({ url: this.arcgisJSAPIUrl })
             .then(() => {
@@ -177,18 +222,25 @@ export class EsriMapService {
                     .loadModules([
                         "esri/geometry/Polyline",
                         "esri/symbols/SimpleLineSymbol",
-                        "esri/Graphic"
+                        "esri/Graphic",
+                        "esri/geometry/support/webMercatorUtils"
                     ])
-                    .then(([Polyline, SimpleLineSymbol, Graphic]) => {
+                    .then(([Polyline, SimpleLineSymbol, Graphic, webMercatorUtils]) => {
                         if (points == null || points.length == 0) {
                             return;
                         }
+
+                        let truePoints = points.map(p => {
+                            var result = webMercatorUtils.xyToLngLat(p.x, p.y)
+                            return new Point(0, result[0], result[1]);
+                        });
+
                         let vertices = new Array<number[]>();
-                        points.forEach(point => {
+                        truePoints.forEach(point => {
                             vertices.push([point.latitude, point.longitude]);
-                        });                
-                        
-                        let polyline = new Polyline({                           
+                        });
+
+                        let polyline = new Polyline({
                             paths: vertices,
                         });
 
