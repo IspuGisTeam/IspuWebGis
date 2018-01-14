@@ -69,12 +69,18 @@ export class TaskService {
         var str = JSON.stringify(body);
         return this.http.post('http://webappbackend.azurewebsites.net/api/tasks', str)
             .map(m => {
-                let jsonresult = m.json();
-                let way = new Array<any>();
-                jsonresult.routeResult.checkpoints.forEach((cPoint: any) => {
-                    cPoint.WKTPath.forEach((p: any) => way.push(p));
-                })
-                return way;
+                try {
+                    let jsonresult = m.json();
+                    let way = new Array<any>();
+                    jsonresult.routeResult.checkpoints.forEach((cPoint: any) => {
+                        cPoint.WKTPath.forEach((p: any) => way.push(p));
+                    })
+                    return way;
+                }
+                catch (e) {
+                    console.log(m);
+                    console.error(e);                   
+                }
             }).toPromise();
 ;
     }

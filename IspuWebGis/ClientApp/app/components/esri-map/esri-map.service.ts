@@ -207,7 +207,7 @@ export class EsriMapService {
                 task.mode = "ShortRoute";
 
                 this.taskService.makeWay(task)
-                    .then(r => {
+                    .then((r: ClientPoint[]) => {
                         this.connectClientPoints(r)
                     });
             });
