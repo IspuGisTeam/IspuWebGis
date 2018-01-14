@@ -1,6 +1,7 @@
 ﻿import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
-import { EsriMapService } from "./esri-map.service";
+import { EsriMapService } from '../../services/esri-map.service';
 import { Subscription } from "rxjs/Subscription";
+import { Point } from "../../classes/point";
 
 @Component({
     selector: 'esri-map',
@@ -12,8 +13,9 @@ export class EsriMapComponent implements OnInit {
     @ViewChild('map') mapRef: ElementRef;
     @Input() center: __esri.PointProperties;
     @Output() centerChange: EventEmitter<__esri.Point> = new EventEmitter<__esri.Point>();
+    @Output() addPoint: EventEmitter<Point> = new EventEmitter<Point>();
 
-    @Input() points: Array<String>;
+    @Input() points: Array<Point>;
 
     private _mapViewProperties: __esri.MapViewProperties;
     private _observableSubscriptions: Subscription[] = [];
@@ -38,6 +40,16 @@ export class EsriMapComponent implements OnInit {
             .then(() => {
                 console.log('MapView is loaded');
                 this._handleMapCenterChange();
+            })
+            .then(() => {
+                this.esriMapService
+                    .subscribeToMapEvent<__esri.MapViewClickEvent>('click')
+                    .subscribe((e: __esri.MapViewClickEvent) => {
+                        this.esriMapService.addMarker(e.mapPoint.latitude, e.mapPoint.longitude)
+                            .then((p) => {
+                                this.addPoint.emit(p);
+                            })
+                    });
             });
     }
 

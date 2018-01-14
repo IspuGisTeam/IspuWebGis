@@ -3,7 +3,7 @@
 import { GeocoderService } from "../../services/geocoder.service";
 import { Point } from "../../classes/point";
 import { GeocodeParams } from "../../classes/geocode-params";
-import { EsriMapService } from '../esri-map/esri-map.service';
+import { EsriMapService } from '../../services/esri-map.service';
 
 @Component({
     selector: 'point-item',
