@@ -45,7 +45,34 @@ export class TasksContainerComponent implements OnInit {
     }
 
     removeTask(task: Task) {
-        this.taskService.removeTask(task);
+        console.log('remove');
+        this.taskService.removeTask(task)
+            .then((isSuccess: Boolean) => {
+                if (isSuccess) {
+                    let index = this.tasks.findIndex(t => t.taskId == task.taskId);
+                    this.tasks.splice(index, 1)
+                } else {
+                    console.log('Imposiible');
+                }
+            })
+            .catch((err: any) => {
+                console.error("Tasks remove failed\n" + err);
+            });
+    }
+
+    clearTasks() {
+        console.log("clear tasks");
+        this.taskService.removeAllTasks()
+            .then((isSuccess: Boolean) => {
+                if (isSuccess) {
+                    this.tasks = [];
+                } else {
+                    console.log('Imposiible');
+                }
+            })
+            .catch((err: any) => {
+                console.error("Tasks remove failed\n" + err);
+            });
     }
 
     selectTask(t: Task) {

@@ -9,6 +9,10 @@
                     <li *ngFor="let task of tasks">
                         <div class="panel panel-default">
                             <div class="panel-heading">
+                                <div class="btn btn-default btn-remove-task" (click)="removeTask(task)">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </div>
+
                                 <button type="button" class="btn btn-default btn-full"
                                         (click)="selectTask(task)"
                                         data-toggle="collapse" data-parent="#panel-all-tasks"
@@ -42,10 +46,10 @@
             </div>
         </div>
 
-        <div class="col-xs-12">
-            <button type="button" class="btn btn-success btn-add" (click)="addTask();">
-                <span class="fa idden-md hidden-lg hidden-xl">+</span>
-                <span class="hidden-sm hidden-xs">Add New Task</span>
+        <div>
+            <button type="button" class="btn btn-warning btn-in-line" (click)="clearTasks();">
+                <span class="fa idden-md hidden-lg hidden-xl glyphicon glyphicon-remove-circle"></span>
+                <span class="hidden-sm hidden-xs">Clear</span>
             </button>
         </div>
         <div *ngIf="pressOnAddButton">

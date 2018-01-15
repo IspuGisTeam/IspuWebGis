@@ -18,14 +18,23 @@ li .glyphicon {
     overflow-y: scroll;
 }
 
-.btn-add {
+.btn-in-line {
+    display: inline;
     float: right;
     padding: 10px 15px;
     margin: 20px;
 }
-
+.btn-remove-task {
+    width: 18%;
+    display: inline;
+    padding: 8px;
+}
+    .btn-remove-task .glyphicon {
+        margin: 0;
+    }
 .btn-full {
-    width: 100%;
+    width: 80%;
+    display: inline;
 }
 
 @media (min-width: 768px) {
