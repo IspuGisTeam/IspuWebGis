@@ -12,12 +12,12 @@
                                 <button type="button" class="btn btn-default btn-full"
                                         (click)="selectTask(task)"
                                         data-toggle="collapse" data-parent="#panel-all-tasks"
-                                        [attr.data-target]="'#task'+task.id">
+                                        [attr.data-target]="'#task'+task.taskId">
                                     {{task.name}}
                                 </button>
                             </div>
 
-                            <div [attr.id]="'task'+task.id" class="panel-collapse collapse">
+                            <div [attr.id]="'task'+task.taskId" class="panel-collapse collapse">
                                 <div class="panel-body">
                                     <table class="table table-striped">
                                         <thead>

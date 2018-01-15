@@ -75,7 +75,6 @@ export class AppComponent implements OnInit {
 
     onTaskChanged(task: Task) {
         this.points = task.points;
-        this.mapService.updateMarkers(this.points);
-        this.mapService.connectMarkers(this.points);
+        this.mapService.connectClientPoints(task.checkpoints);
     }
 }
