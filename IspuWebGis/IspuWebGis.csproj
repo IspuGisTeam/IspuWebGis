@@ -36,7 +36,7 @@
     <TypeScriptCompile Include="ClientApp\app\classes\point.ts" />
     <TypeScriptCompile Include="ClientApp\app\classes\taskRequest.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\esri-map\esri-map.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\esri-map\esri-map.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\esri-map.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\geocoder.service.ts" />
   </ItemGroup>
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { EsriMapService } from "../esri-map/esri-map.service";
+import { EsriMapService } from '../../services/esri-map.service';
 import { Point } from "../../classes/point";
 import { Task } from "../../classes/task";
 
@@ -10,6 +10,7 @@ import { Task } from "../../classes/task";
 })
 export class AppComponent implements OnInit {
     points: Array<Point> = [];
+    task: Task;
 
     mapInnerHeight: string;
     pointsContainer: HTMLElement | null;
@@ -22,6 +23,17 @@ export class AppComponent implements OnInit {
 
     centerChange(point: __esri.Point) {
         console.log('Center of map was changed: ' + '[longitude: ' + point.longitude + ', latitude: ' + point.latitude + ']');
+    }
+
+    addPoint(point: Point) {
+        var id = 0;
+        this.points.map(p => id = Math.max(p.id, id));
+        point.id = id + 1
+        this.points.push(point);
+        console.log("Added point");
+        //console.log(this.points.length);
+        //this.mapService.updateMarkers(this.points);
+        //this.mapService.connectMarkers(this.points);
     }
 
     /**

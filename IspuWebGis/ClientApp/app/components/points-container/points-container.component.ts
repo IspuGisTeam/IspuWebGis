@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { EsriMapService } from '../esri-map/esri-map.service';
+import { Component, Input, OnChanges } from '@angular/core';
+import { EsriMapService } from '../../services/esri-map.service';
 import { Point } from "../../classes/point";
 import { AppComponent } from '../app/app.component';
 import {GeocoderService} from "../../services/geocoder.service";
@@ -13,18 +13,30 @@ import {GeocodeParams} from "../../classes/geocode-params";
     styleUrls: ['./points-container.component.css']
 })
 
-export class PointsContainerComponent {
+export class PointsContainerComponent implements OnChanges  {
     @Input() points: Array<Point>; // here array of markers
     constructor(private esriMap: EsriMapService, private appComp: AppComponent, private geocodeService: GeocoderService) { }
 
-    async addPoint() { 
+    async generatePoints() { 
         var x = <number>this.appComp.center.longitude;
         var y = <number>this.appComp.center.latitude;
-        this.points = await this.esriMap.addMarkers(x, y); // array of three markers` points (type: Point)
-        this.points = this.getPointsReverseGeoCode(this.points);
+        var points = await this.esriMap.addMarkers(x, y); // array of three markers` points (type: Point)
+        var geocoded_points = this.getPointsReverseGeoCode(points);
+        this.points.length = 0;
+        geocoded_points.forEach(p => this.points.push(p));
+    }
+
+    ngOnChanges() {
+
+        //if (this.points) {
+        //    var geocoded_points = this.getPointsReverseGeoCode(this.points);
+        //    this.points.length = 0;
+        //    geocoded_points.forEach(p => this.points.push(p));
+        //}
     }
 
     async makeWay() {
+        console.log(this.points.length);
         this.esriMap.connectMarkers(this.points);
     }
 
@@ -36,7 +48,6 @@ export class PointsContainerComponent {
             let index = i;
             this.geocodeService.getReverseGeocode(param).subscribe((data) => {
                 if (data.address)
-
                     points[index].address = data.address.ShortLabel;
             });
 

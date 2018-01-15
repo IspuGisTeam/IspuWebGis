@@ -3,11 +3,11 @@ import { Http, Headers } from '@angular/http';
 import { EsriLoaderService } from 'angular-esri-loader';
 import { Observable } from "rxjs/Observable";
 import { Observer } from "rxjs/Observer";
-import { Point } from "../../classes/point";
-import { ClientPoint } from "../../classes/clientPoint";
-import { TaskRequest } from "../../classes/taskRequest";
+import { Point } from "../classes/point";
+import { ClientPoint } from "../classes/clientPoint";
+import { TaskRequest } from "../classes/taskRequest";
 
-import { TaskService } from "../../services/task.service";
+import { TaskService } from "./task.service";
 
 import 'rxjs/add/operator/toPromise';
 
@@ -40,10 +40,12 @@ export class EsriMapService {
                 mapViewProperties.map = createdMap;
 
                 this._mapView = new MapView(mapViewProperties);
+
                 return;
             });
         });
     }
+
 
     getCenter(): Promise<__esri.Point> {
         return new Promise<__esri.Point>((resolve, reject) => {
@@ -93,7 +95,7 @@ export class EsriMapService {
                     });
             });
     }
-
+    
     addMarkers(x: number, y: number): Promise<Point[]> { // method creates three random markers within Ivanovo       
         return this.esriLoaderService
             .load({ url: this.arcgisJSAPIUrl })
@@ -142,7 +144,7 @@ export class EsriMapService {
     /**
      * Add simple marker and delete other things on map(issue!)
      */
-    addMarker(latitude: number, longitude: number): Promise<any> {
+    addMarker(latitude: number, longitude: number): Promise<Point> {
         //alert(longitude+","+latitude);
         return this.esriLoaderService
             .load({ url: this.arcgisJSAPIUrl })
@@ -153,13 +155,13 @@ export class EsriMapService {
                         "esri/Graphic",
                     ])
                     .then(([SimpleMarkerSymbol, Graphic]) => {
-                        this._mapView.graphics.removeAll(); //dunno how to remove single shit.
+                        //this._mapView.graphics.removeAll(); //dunno how to remove single shit.
 
                         //var p = new Point(0, longitude, latitude);
                         var point = {
                             type: "point", // autocasts as new Point()
-                            longitude: latitude,
-                            latitude: longitude,
+                            longitude: longitude,
+                            latitude: latitude,
                         };
                         var pointGraphic = new Graphic({
                             geometry: point,
@@ -173,7 +175,7 @@ export class EsriMapService {
                         this._mapView.graphics.add(pointGraphic);
 
 
-                        return;
+                        return new Point(10, longitude, latitude);
                     });
             });
     }
@@ -207,7 +209,7 @@ export class EsriMapService {
                 task.mode = "ShortRoute";
 
                 this.taskService.makeWay(task)
-                    .then(r => {
+                    .then((r: ClientPoint[]) => {
                         this.connectClientPoints(r)
                     });
             });

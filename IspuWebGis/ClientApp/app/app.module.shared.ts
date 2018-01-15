@@ -9,7 +9,7 @@ import { TasksContainerComponent } from './components/tasks-container/tasks-cont
 import { PointsContainerComponent } from './components/points-container/points-container.component';
 import { PointItemComponent } from './components/point-item/point-item.component';
 import { EsriLoaderModule } from 'angular-esri-loader';
-import { EsriMapService } from './components/esri-map/esri-map.service';
+import { EsriMapService } from './services/esri-map.service';
 import { EsriMapComponent } from './components/esri-map/esri-map.component';
 import { GeocoderService } from './services/geocoder.service';
 import { TaskService } from './services/task.service';
