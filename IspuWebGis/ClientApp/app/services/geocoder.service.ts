@@ -1,13 +1,14 @@
 ﻿ import { Injectable } from '@angular/core';
  import { Http } from '@angular/http';
 
- import { GeocodeParams } from "../classes/geocode-params";
+ import { GeocodeParams, ReverseGeocodeParams } from "../classes/geocode-params";
 
  import 'rxjs/Rx';
 
  @Injectable()
  export class GeocoderService {
      private readonly GEOCODE_URL: string = "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates";
+     private readonly REVERSE_GECOODE_URL: string = "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode";
 
      constructor(private http: Http) {
      }
@@ -35,6 +36,12 @@
          // return this.http.get(link).map(resp => console.log(resp));
          return this.http.get(link).map((resp: any) => JSON.parse(resp["_body"]));
 
+     }
+
+     getReverse(params: ReverseGeocodeParams) {
+         let json = JSON.stringify(params);
+         let link = this.REVERSE_GECOODE_URL + `?location=${json}&f=pjson`;
+         return this.http.get(link).map((resp: any) => JSON.parse(resp["_body"]));
      }
 
  }

@@ -7,3 +7,10 @@
         this.format = respType;
     }
 }
+
+export class ReverseGeocodeParams {
+    public spatialReference: Object;
+    constructor(public x: number, public y: number) {
+        this.spatialReference = { "wkid": 3857 };
+    }
+}

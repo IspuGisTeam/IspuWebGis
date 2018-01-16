@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { EsriMapService } from '../../services/esri-map.service';
+import { CoordinatesService } from '../../services/coordinates.service';
 import { Point } from "../../classes/point";
 import { Task } from "../../classes/task";
 
@@ -52,7 +53,9 @@ export class AppComponent implements OnInit {
         this.onWindowResize();
     }
 
-    constructor(private mapService: EsriMapService) {
+    constructor(
+        private mapService: EsriMapService,
+        private coordinatesService: CoordinatesService) {
     }
 
     private onWindowResize() {
@@ -75,6 +78,9 @@ export class AppComponent implements OnInit {
 
     onTaskChanged(task: Task) {
         this.points = task.points;
-        this.mapService.connectClientPoints(task.checkpoints);
+        this.mapService.connectClientPoints(task.checkpoints)
+            .then(() => {
+                this.coordinatesService.convert(task.points);
+            });
     }
 }
