@@ -91,6 +91,7 @@ export class TaskService {
             .map(m => {
                 try {
                     let jsonresult = m.json();
+                    console.log(jsonresult);
                     let way = new Array<any>();
                     jsonresult.routeResult.checkpoints.forEach((cPoint: any) => {
                         cPoint.WKTPath.forEach((p: any) => way.push(p));

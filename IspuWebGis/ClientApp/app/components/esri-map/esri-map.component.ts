@@ -45,12 +45,18 @@ export class EsriMapComponent implements OnInit {
                 this.esriMapService
                     .subscribeToMapEvent<__esri.MapViewClickEvent>('click')
                     .subscribe((e: __esri.MapViewClickEvent) => {
-                        this.esriMapService.addMarker(e.mapPoint.latitude, e.mapPoint.longitude)
-                            .then((p) => {
-                                this.addPoint.emit(p);
-                            })
+                        this.addMarker(e.mapPoint.latitude, e.mapPoint.longitude)
                     });
             });
+    }
+
+    addMarker(latitude: number, longitude: number)
+    {
+        let point = new Point(10, latitude, longitude);
+        this.esriMapService.addMarker(point)
+            .then(() => {
+                this.addPoint.emit(point);
+            })
     }
 
     private _handleMapCenterChange() {

@@ -34,16 +34,12 @@ export class AppComponent implements OnInit {
         point.id = id + 1
         this.points.push(point);
 
-        let loc = point.latitude + "," + point.longitude;
+        let loc = point.longitude + "," + point.latitude;
         let geocodeParams: GeocodeParams = new GeocodeParams(loc);
         this.geocoderService.getReverseGeocode(geocodeParams).subscribe((data) => {
             if (data.address)
                 point.address = data.address.ShortLabel;
         });
-
-        //console.log(this.points.length);
-        //this.mapService.updateMarkers(this.points);
-        //this.mapService.connectMarkers(this.points);
     }
 
     /**

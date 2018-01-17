@@ -8,6 +8,7 @@ import { ClientPoint } from "../classes/clientPoint";
 import { TaskRequest } from "../classes/taskRequest";
 
 import { TaskService } from "./task.service";
+import { CoordinatesService } from "./coordinates.service";
 
 import 'rxjs/add/operator/toPromise';
 
@@ -19,7 +20,8 @@ export class EsriMapService {
     constructor(
         private esriLoaderService: EsriLoaderService,
         private _zone: NgZone,
-        private taskService: TaskService) { }
+        private taskService: TaskService,
+        private coordinatesService: CoordinatesService) { }
 
     createMap(mapViewProperties: __esri.MapViewProperties): Promise<void> {
         return this.esriLoaderService.load({
@@ -96,55 +98,10 @@ export class EsriMapService {
             });
     }
     
-    addMarkers(x: number, y: number): Promise<Point[]> { // method creates three random markers within Ivanovo       
-        return this.esriLoaderService
-            .load({ url: this.arcgisJSAPIUrl })
-            .then(() => {
-                return this.esriLoaderService
-                    .loadModules([
-                        'esri/symbols/SimpleMarkerSymbol',
-                        "esri/Graphic",
-                    ])
-                    .then(([SimpleMarkerSymbol, Graphic]) => {
-                        var arrayOfMarkers = new Array<Point>();
-                        this._mapView.graphics.removeAll();
-                        var new_x = x, new_y = y;
-                        for (var i = 0; i < 3; i++) {
-                            new_x = Math.random() * ((x + 0.021) - (x - 0.027)) + (x - 0.027);
-                            new_y = Math.random() * ((y + 0.021) - (y - 0.027)) + (y - 0.027);
-                            var p = new Point(i, new_x, new_y);
-                            var point = {
-
-                                type: "point", // autocasts as new Point()
-                                longitude: new_x,
-                                latitude: new_y,
-                            };
-                            var pointGraphic = new Graphic({
-                                geometry: point,
-                                symbol: {
-                                    type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
-                                    style: "circle",
-                                    color: "#D41F67",
-                                    size: 16,
-
-                                    // Причина бага с неверным отображением точек
-                                    //xoffset: new_x,
-                                    //yoffset: new_y,
-                                }
-                            });
-                            this._mapView.graphics.add(pointGraphic);
-                            arrayOfMarkers[i] = p;
-                            new_x = x;
-                            new_y = y;
-                        }
-                        return arrayOfMarkers;
-                    });
-            });
-    }
     /**
      * Add simple marker and delete other things on map(issue!)
      */
-    addMarker(latitude: number, longitude: number): Promise<Point> {
+    addMarker(point: Point): Promise<any> {
         //alert(longitude+","+latitude);
         return this.esriLoaderService
             .load({ url: this.arcgisJSAPIUrl })
@@ -158,13 +115,13 @@ export class EsriMapService {
                         //this._mapView.graphics.removeAll(); //dunno how to remove single shit.
 
                         //var p = new Point(0, longitude, latitude);
-                        var point = {
+                        var marker = {
                             type: "point", // autocasts as new Point()
-                            longitude: longitude,
-                            latitude: latitude,
+                            longitude: point.longitude,
+                            latitude: point.latitude,
                         };
                         var pointGraphic = new Graphic({
-                            geometry: point,
+                            geometry: marker,
                             symbol: {
                                 type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
                                 style: "circle",
@@ -175,29 +132,14 @@ export class EsriMapService {
                         this._mapView.graphics.add(pointGraphic);
 
 
-                        return new Point(10, longitude, latitude);
+                        return;
                     });
             });
     }
+
     connectMarkers(points: Point[]) {
-        this.esriLoaderService
-            .load({ url: this.arcgisJSAPIUrl })
-            .then(() => {
-                return this.esriLoaderService
-                    .loadModules([
-                        "esri/geometry/support/webMercatorUtils"
-                    ])
-            })
-            .then(([webMercatorUtils]) => {
-
-                let clientPoints = points.map(p => {
-                    var result = webMercatorUtils.lngLatToXY(p.latitude, p.longitude)
-                    var cp = new ClientPoint()
-                    cp.x = result[0];
-                    cp.y = result[1];
-                    return cp;
-                });
-
+        this.coordinatesService.convertToClientPoints(points)
+            .then((clientPoints: ClientPoint[]) => {
                 var task = new TaskRequest();
                 task.isFavourite = false;
                 task.startPoint = clientPoints[0];
@@ -208,15 +150,57 @@ export class EsriMapService {
                 task.userId = 1;
                 task.mode = "ShortRoute";
 
-                this.taskService.makeWay(task)
-                    .then((r: ClientPoint[]) => {
-                        this.connectClientPoints(r)
-                    });
+                return this.taskService.makeWay(task);
+            })
+            .then((resClientPoints: ClientPoint[]) => {
+                return this.coordinatesService.convertToPoints(resClientPoints);
+            })
+            .then((wayPoints) => {
+                return this.drawPolyline(wayPoints);
             });
+    }
 
+    drawPolyline(points: Point[]): Promise<any> {
+        return this.esriLoaderService
+            .load({ url: this.arcgisJSAPIUrl })
+            .then(() => {
+                return this.esriLoaderService
+                    .loadModules([
+                        "esri/geometry/Polyline",
+                        "esri/symbols/SimpleLineSymbol",
+                        "esri/Graphic"
+                    ])                   
+            })
+            .then(([Polyline, SimpleLineSymbol, Graphic]) => {
+                let vertices = new Array<number[]>();
+                points.forEach(point => {
+                    vertices.push([point.longitude, point.latitude]);
+                });
+
+                let polyline = new Polyline({
+                    paths: vertices,
+                });
+
+                let symbol = new SimpleLineSymbol({
+                    type: "simple-line", // autocasts as SimpleLineSymbol
+                    color: "#D41F67",
+                    width: "2px"
+                });
+
+                let graphic = new Graphic({
+                    geometry: polyline,
+                    symbol: symbol,
+                    cap: "round"
+                });
+
+                this._mapView.graphics.add(graphic);
+
+            })
     }
 
     connectClientPoints(points: ClientPoint[]): Promise<any> {
+              
+
         return this.esriLoaderService
             .load({ url: this.arcgisJSAPIUrl })
             .then(() => {
@@ -263,24 +247,24 @@ export class EsriMapService {
                         this._mapView.graphics.add(graphic);
 
 
-                        for (let p of truePoints) {
-                            var symb = {
-                                type: "point", // autocasts as new Point()
-                                longitude: p.latitude,
-                                latitude: p.longitude,
-                            };
+                        //for (let p of truePoints) {
+                        //    var symb = {
+                        //        type: "point", // autocasts as new Point()
+                        //        longitude: p.latitude,
+                        //        latitude: p.longitude,
+                        //    };
 
-                            var pointGraphic = new Graphic({
-                                geometry: symb,
-                                symbol: {
-                                    type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-                                    style: "circle",
-                                    color: "#D41F67",
-                                    size: 16,
-                                }
-                            });
-                            this._mapView.graphics.add(pointGraphic);
-                        }
+                        //    var pointGraphic = new Graphic({
+                        //        geometry: symb,
+                        //        symbol: {
+                        //            type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+                        //            style: "circle",
+                        //            color: "#D41F67",
+                        //            size: 16,
+                        //        }
+                        //    });
+                        //    this._mapView.graphics.add(pointGraphic);
+                        //}
 
                         return;
                     });

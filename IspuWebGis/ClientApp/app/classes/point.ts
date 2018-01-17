@@ -3,7 +3,6 @@
         public id: number,
         public latitude: number,
         public longitude: number,
-        public address: string = "",
-        public isConverted: boolean = false) {
+        public address: string = "") {
     }
 }

@@ -18,12 +18,15 @@ export class PointsContainerComponent implements OnChanges  {
     constructor(private esriMap: EsriMapService, private appComp: AppComponent, private geocodeService: GeocoderService) { }
 
     async generatePoints() { 
-        var x = <number>this.appComp.center.longitude;
-        var y = <number>this.appComp.center.latitude;
-        var points = await this.esriMap.addMarkers(x, y); // array of three markers` points (type: Point)
-        var geocoded_points = this.getPointsReverseGeoCode(points);
-        this.points.length = 0;
-        geocoded_points.forEach(p => this.points.push(p));
+
+        // Deleted!!!
+        
+        //var x = <number>this.appComp.center.longitude;
+        //var y = <number>this.appComp.center.latitude;
+        //var points = await this.esriMap.addMarkers(x, y); // array of three markers` points (type: Point)
+        //var geocoded_points = this.getPointsReverseGeoCode(points);
+        //this.points.length = 0;
+        //geocoded_points.forEach(p => this.points.push(p));
     }
 
     ngOnChanges() {
