@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { Task } from '../classes/task';
 import { TaskRequest } from '../classes/taskRequest';
@@ -87,7 +87,31 @@ export class TaskService {
             .toPromise();
     }
 
-    makeWay(task: TaskRequest) { 
+    makeWay(task: Task) {        
+        return this.coordinatesService.convertToClientPoints(task.points)
+            .then((clientPoints) => {
+                var taskRequest = new TaskRequest();
+                taskRequest.isFavourite = false;
+                taskRequest.startPoint = clientPoints[0];
+                clientPoints.shift();
+                taskRequest.checkpoints = clientPoints;
+                taskRequest.name = "N0 " + Date.now;
+                taskRequest.time = new Date();
+                taskRequest.userId = 1;
+                taskRequest.mode = "ShortRoute";
+                return this.makeWayRequest(taskRequest);
+            })
+            .then((jsonresult) => {
+                let way = new Array<any>();
+                jsonresult.routeResult.checkpoints.forEach((cPoint: any) => {
+                    cPoint.WKTPath.forEach((p: any) => way.push(p));
+                })
+                return this.coordinatesService.convertToPoints(way)
+            })
+            .then((way) => { task.way = way });
+    }
+
+    makeWayRequest(task: TaskRequest) { 
         var body = <any>task;
         body["token"] = TaskService.TOKEN;
         var str = JSON.stringify(body);
@@ -95,12 +119,8 @@ export class TaskService {
             .map(m => {
                 try {
                     let jsonresult = m.json();
-                    console.log(jsonresult);
-                    let way = new Array<any>();
-                    jsonresult.routeResult.checkpoints.forEach((cPoint: any) => {
-                        cPoint.WKTPath.forEach((p: any) => way.push(p));
-                    })
-                    return way;
+                    console.log(jsonresult);                    
+                    return jsonresult;
                 }
                 catch (e) {
                     console.log(m);

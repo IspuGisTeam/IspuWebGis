@@ -7,6 +7,8 @@ export class Task {
     //isFavorite: boolean;
     //mode: string;
 
+    public way: Point[];
+
     constructor(public taskId: number, public UserId: number, public name: string,
         public time: Date, public points: Point[]) {
     }

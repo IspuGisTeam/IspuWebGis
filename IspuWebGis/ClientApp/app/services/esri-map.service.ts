@@ -136,35 +136,7 @@ export class EsriMapService {
                         this._mapView.graphics.add(pointGraphic);
                     });
             });
-    }
-
-    connectMarkers(points: Point[]) {
-        let wayPoints_: Point[];
-        this.coordinatesService.convertToClientPoints(points)
-            .then((clientPoints: ClientPoint[]) => {
-                var task = new TaskRequest();
-                task.isFavourite = false;
-                task.startPoint = clientPoints[0];
-                clientPoints.shift();
-                task.checkpoints = clientPoints;
-                task.name = "Name name";
-                task.time = new Date();
-                task.userId = 1;
-                task.mode = "ShortRoute";
-
-                return this.taskService.makeWay(task);
-            })
-            .then((resClientPoints: ClientPoint[]) => {
-                return this.coordinatesService.convertToPoints(resClientPoints);
-            })
-            .then((wayPoints) => {
-                wayPoints_ = wayPoints;
-                this.updateMarkers(points);
-            })
-            .then(() => {
-                return this.drawPolyline(wayPoints_);
-            });
-    }
+    }  
 
     drawPolyline(points: Point[]): Promise<any> {
         return this.esriLoaderService

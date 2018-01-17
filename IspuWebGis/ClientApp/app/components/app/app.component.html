@@ -12,7 +12,9 @@
                               [points]="points"></esri-map>
                 </div>
                 <div class="row">
-                    <points-container id="points-container" [points]="points"></points-container>
+                    <points-container id="points-container" 
+                                      [points]="points"
+                                      (onMakeWay)="onMakeWay($event)"></points-container>
                 </div>
             </div>
         </div>
