@@ -1,6 +1,9 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { EsriMapService } from '../../services/esri-map.service';
+import { CoordinatesService } from '../../services/coordinates.service';
+import { GeocoderService } from '../../services/geocoder.service';
 import { Point } from "../../classes/point";
+import { GeocodeParams } from "../../classes/geocode-params";
 import { Task } from "../../classes/task";
 
 @Component({
@@ -30,7 +33,14 @@ export class AppComponent implements OnInit {
         this.points.map(p => id = Math.max(p.id, id));
         point.id = id + 1
         this.points.push(point);
-        console.log("Added point");
+
+        let loc = point.latitude + "," + point.longitude;
+        let geocodeParams: GeocodeParams = new GeocodeParams(loc);
+        this.geocoderService.getReverseGeocode(geocodeParams).subscribe((data) => {
+            if (data.address)
+                point.address = data.address.ShortLabel;
+        });
+
         //console.log(this.points.length);
         //this.mapService.updateMarkers(this.points);
         //this.mapService.connectMarkers(this.points);
@@ -41,9 +51,6 @@ export class AppComponent implements OnInit {
      */
     ngOnInit() {
         this.points = [];
-        this.points.push(new Point(0, 40.971, 56.997));
-        this.points.push(new Point(1, 41.071, 57.097));
-        this.points.push(new Point(2, 40.871, 56.897));
 
         let footer = document.getElementById("points-container");
         if (footer != null) this.pointsContainer = <HTMLElement | null>(footer.firstChild);
@@ -52,7 +59,10 @@ export class AppComponent implements OnInit {
         this.onWindowResize();
     }
 
-    constructor(private mapService: EsriMapService) {
+    constructor(
+        private mapService: EsriMapService,
+        private geocoderService: GeocoderService,
+        private coordinatesService: CoordinatesService) {
     }
 
     private onWindowResize() {
@@ -75,7 +85,9 @@ export class AppComponent implements OnInit {
 
     onTaskChanged(task: Task) {
         this.points = task.points;
-        this.mapService.updateMarkers(this.points);
-        this.mapService.connectMarkers(this.points);
+        this.mapService.connectClientPoints(task.checkpoints)
+            .then(() => {
+                this.coordinatesService.convert(task.points);
+            });
     }
 }

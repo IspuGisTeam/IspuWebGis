@@ -1,4 +1,9 @@
 ﻿export class Point {
-    constructor(public id: number, public latitude: number, public longitude: number, public address: string = "") {
+    constructor(
+        public id: number,
+        public latitude: number,
+        public longitude: number,
+        public address: string = "",
+        public isConverted: boolean = false) {
     }
 }

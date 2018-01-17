@@ -13,6 +13,7 @@ import { EsriMapService } from './services/esri-map.service';
 import { EsriMapComponent } from './components/esri-map/esri-map.component';
 import { GeocoderService } from './services/geocoder.service';
 import { TaskService } from './services/task.service';
+import { CoordinatesService } from './services/coordinates.service';
 
 @NgModule({
     declarations: [
@@ -35,7 +36,8 @@ import { TaskService } from './services/task.service';
     providers: [
         EsriMapService,
         GeocoderService,
-        TaskService
+        TaskService,
+        CoordinatesService,
     ]
 })
 export class AppModuleShared {

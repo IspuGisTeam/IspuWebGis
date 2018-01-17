@@ -9,36 +9,56 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class TaskService {
+    private static readonly DOMAIN = "http://webappbackend.azurewebsites.net";
+    private static readonly ROUTE_PREFIX = "/api/tasks";
+    private static readonly TOKEN = "?token=MTb0my1H1UgeJHVEzQ24SZQkQ0Xw0Tn5";
 
-    private readonly GET_ALL_TASKS: string = "/api/Tasks";
+    private static readonly ALL_TASKS: string = `${TaskService.DOMAIN}${TaskService.ROUTE_PREFIX}${TaskService.TOKEN}`;
+    private static readonly REMOVE_TASK: string = `${TaskService.DOMAIN}${TaskService.ROUTE_PREFIX}${TaskService.TOKEN}&taskId=`;
 
     constructor(private http: Http) {
     }
 
     public tasks: Task[] = [
-        new Task(1, 1, "Task#2", []),
-        new Task(2, 2, "Task#2", []),
-        new Task(3, 3, "Task#3", [])
+        new Task(1, 1, "Task#2", new Date(), []),
+        new Task(2, 2, "Task#2", new Date(), []),
+        new Task(3, 3, "Task#3", new Date(), []),
         // etc.
     ];
 
     getAllTasks(): Promise<Task[]> {
         return this.http
-            .get(this.GET_ALL_TASKS)
+            .get(TaskService.ALL_TASKS)
             .map(r => {
-                return r.json().tasks;
+                return r.json().map((t:any) => new Task(t.taskId, t.UserId, t.name, t.time, t.checkpoints));
             })
             .toPromise();
     }
 
     addNewTask(taskId_: number, userId_: number, name_: string) {
 
-        this.tasks.push(new Task(taskId_, userId_, name_, []));
+        this.tasks.push(new Task(taskId_, userId_, name_, new Date(), []));
     }
 
-    removeTask(task: Task) {
-        var indexOfTask = this.tasks.indexOf(task);
-        this.tasks.splice(indexOfTask, 1);
+    removeTask(task: Task): Promise<Boolean> {
+        let url = TaskService.REMOVE_TASK + task.taskId;
+        return this.http
+            .delete(url)
+            .map(r => {
+                console.log(r);
+                return r.text() == "Success";
+            })
+            .toPromise();
+    }
+
+    removeAllTasks(): Promise<Boolean> {
+        return this.http
+            .delete(TaskService.ALL_TASKS)
+            .map(r => {
+                console.log(r);
+                return r.text() == "Success";
+            })
+            .toPromise();
     }
 
     makeWay(task: TaskRequest) {
@@ -82,7 +102,6 @@ export class TaskService {
                     console.error(e);                   
                 }
             }).toPromise();
-;
     }
 
 }

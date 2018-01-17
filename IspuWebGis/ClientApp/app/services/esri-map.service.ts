@@ -228,6 +228,8 @@ export class EsriMapService {
                         "esri/geometry/support/webMercatorUtils"
                     ])
                     .then(([Polyline, SimpleLineSymbol, Graphic, webMercatorUtils]) => {
+                        this._mapView.graphics.removeAll();
+
                         if (points == null || points.length == 0) {
                             return;
                         }
@@ -258,7 +260,27 @@ export class EsriMapService {
                             cap: "round"
                         });
 
-                        this._mapView.graphics.add(graphic)
+                        this._mapView.graphics.add(graphic);
+
+
+                        for (let p of truePoints) {
+                            var symb = {
+                                type: "point", // autocasts as new Point()
+                                longitude: p.latitude,
+                                latitude: p.longitude,
+                            };
+
+                            var pointGraphic = new Graphic({
+                                geometry: symb,
+                                symbol: {
+                                    type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+                                    style: "circle",
+                                    color: "#D41F67",
+                                    size: 16,
+                                }
+                            });
+                            this._mapView.graphics.add(pointGraphic);
+                        }
 
                         return;
                     });
