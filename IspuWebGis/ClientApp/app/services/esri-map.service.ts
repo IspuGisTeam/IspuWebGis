@@ -17,11 +17,16 @@ export class EsriMapService {
     private readonly arcgisJSAPIUrl = 'https://js.arcgis.com/4.5/';
     private _mapView: __esri.MapView;
 
+    private Graphic: __esri.Graphic;
+    private SimpleMarkerSymbol: __esri.SimpleMarkerSymbol;
+    private Polyline: __esri.Polyline;
+
     constructor(
         private esriLoaderService: EsriLoaderService,
         private _zone: NgZone,
         private taskService: TaskService,
         private coordinatesService: CoordinatesService) { }
+       
 
     createMap(mapViewProperties: __esri.MapViewProperties): Promise<void> {
         return this.esriLoaderService.load({
@@ -31,23 +36,22 @@ export class EsriMapService {
                 'esri/Map',
                 'esri/views/MapView',
                 "esri/Basemap"
-            ]).then(([Map, MapView, Basemap]: [__esri.MapConstructor, __esri.MapViewConstructor, __esri.BasemapConstructor]) => {
+            ])
+        }).then(([Map, MapView, Basemap]: [__esri.MapConstructor, __esri.MapViewConstructor, __esri.BasemapConstructor]) => {
 
-                let mapProperties: __esri.MapProperties = {};
-                let basemap: __esri.Basemap = Basemap.fromId('streets');
-                mapProperties.basemap = basemap;
-                let createdMap = new Map(mapProperties);
+            let mapProperties: __esri.MapProperties = {};
+            let basemap: __esri.Basemap = Basemap.fromId('streets');
+            mapProperties.basemap = basemap;
+            let createdMap = new Map(mapProperties);
 
-                mapViewProperties.zoom = 16;
-                mapViewProperties.map = createdMap;
+            mapViewProperties.zoom = 16;
+            mapViewProperties.map = createdMap;
 
-                this._mapView = new MapView(mapViewProperties);
+            this._mapView = new MapView(mapViewProperties);
 
-                return;
-            });
+            return;
         });
     }
-
 
     getCenter(): Promise<__esri.Point> {
         return new Promise<__esri.Point>((resolve, reject) => {
@@ -80,8 +84,8 @@ export class EsriMapService {
 
                             var point = {
                                 type: "point", // autocasts as new Point()
-                                longitude: p.latitude,
-                                latitude: p.longitude,
+                                longitude: p.longitude,
+                                latitude: p.latitude,
                             };
                             var pointGraphic = new Graphic({
                                 geometry: point,
@@ -130,14 +134,12 @@ export class EsriMapService {
                             }
                         });
                         this._mapView.graphics.add(pointGraphic);
-
-
-                        return;
                     });
             });
     }
 
     connectMarkers(points: Point[]) {
+        let wayPoints_: Point[];
         this.coordinatesService.convertToClientPoints(points)
             .then((clientPoints: ClientPoint[]) => {
                 var task = new TaskRequest();
@@ -156,7 +158,11 @@ export class EsriMapService {
                 return this.coordinatesService.convertToPoints(resClientPoints);
             })
             .then((wayPoints) => {
-                return this.drawPolyline(wayPoints);
+                wayPoints_ = wayPoints;
+                this.updateMarkers(points);
+            })
+            .then(() => {
+                return this.drawPolyline(wayPoints_);
             });
     }
 
@@ -197,77 +203,5 @@ export class EsriMapService {
 
             })
     }
-
-    connectClientPoints(points: ClientPoint[]): Promise<any> {
-              
-
-        return this.esriLoaderService
-            .load({ url: this.arcgisJSAPIUrl })
-            .then(() => {
-                return this.esriLoaderService
-                    .loadModules([
-                        "esri/geometry/Polyline",
-                        "esri/symbols/SimpleLineSymbol",
-                        "esri/Graphic",
-                        "esri/geometry/support/webMercatorUtils"
-                    ])
-                    .then(([Polyline, SimpleLineSymbol, Graphic, webMercatorUtils]) => {
-                        this._mapView.graphics.removeAll();
-
-                        if (points == null || points.length == 0) {
-                            return;
-                        }
-
-                        let truePoints = points.map(p => {
-                            var result = webMercatorUtils.xyToLngLat(p.x, p.y)
-                            return new Point(0, result[0], result[1]);
-                        });
-
-                        let vertices = new Array<number[]>();
-                        truePoints.forEach(point => {
-                            vertices.push([point.latitude, point.longitude]);
-                        });
-
-                        let polyline = new Polyline({
-                            paths: vertices,
-                        });
-
-                        let symbol = new SimpleLineSymbol({
-                            type: "simple-line", // autocasts as SimpleLineSymbol
-                            color: "#D41F67",
-                            width: "2px"
-                        });
-
-                        let graphic = new Graphic({
-                            geometry: polyline,
-                            symbol: symbol,
-                            cap: "round"
-                        });
-
-                        this._mapView.graphics.add(graphic);
-
-
-                        //for (let p of truePoints) {
-                        //    var symb = {
-                        //        type: "point", // autocasts as new Point()
-                        //        longitude: p.latitude,
-                        //        latitude: p.longitude,
-                        //    };
-
-                        //    var pointGraphic = new Graphic({
-                        //        geometry: symb,
-                        //        symbol: {
-                        //            type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-                        //            style: "circle",
-                        //            color: "#D41F67",
-                        //            size: 16,
-                        //        }
-                        //    });
-                        //    this._mapView.graphics.add(pointGraphic);
-                        //}
-
-                        return;
-                    });
-            });
-    }
+    
 }

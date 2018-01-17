@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { Task } from '../classes/task';
 import { TaskRequest } from '../classes/taskRequest';
+import { GeocoderService } from './geocoder.service';
+import { CoordinatesService } from './coordinates.service';
 
 import { Observable } from "rxjs/Rx";
 
@@ -11,12 +13,17 @@ import 'rxjs/add/operator/toPromise';
 export class TaskService {
     private static readonly DOMAIN = "http://webappbackend.azurewebsites.net";
     private static readonly ROUTE_PREFIX = "/api/tasks";
-    private static readonly TOKEN = "?token=MTb0my1H1UgeJHVEzQ24SZQkQ0Xw0Tn5";
+    private static readonly TOKEN = "token";
+    private static readonly TOKEN_URI = "?token=" + TaskService.TOKEN;
 
-    private static readonly ALL_TASKS: string = `${TaskService.DOMAIN}${TaskService.ROUTE_PREFIX}${TaskService.TOKEN}`;
-    private static readonly REMOVE_TASK: string = `${TaskService.DOMAIN}${TaskService.ROUTE_PREFIX}${TaskService.TOKEN}&taskId=`;
 
-    constructor(private http: Http) {
+    private static readonly ALL_TASKS: string = `${TaskService.DOMAIN}${TaskService.ROUTE_PREFIX}${TaskService.TOKEN_URI}`;
+    private static readonly REMOVE_TASK: string = `${TaskService.DOMAIN}${TaskService.ROUTE_PREFIX}${TaskService.TOKEN_URI}&taskId=`;
+
+    constructor(private http: Http,
+        private geocoderService: GeocoderService,
+        private coordinatesService: CoordinatesService) {
+
     }
 
     public tasks: Task[] = [
@@ -29,10 +36,29 @@ export class TaskService {
     getAllTasks(): Promise<Task[]> {
         return this.http
             .get(TaskService.ALL_TASKS)
-            .map(r => {
-                return r.json().map((t:any) => new Task(t.taskId, t.UserId, t.name, t.time, t.checkpoints));
-            })
-            .toPromise();
+            .map(r => r.json())
+            .toPromise()
+            .then(resTasks => {
+                let promises = new Array<Promise<Task>>();
+                resTasks.forEach((t: any) => {
+                    let checkpoints = t.checkpoints;
+                    let promise = this.coordinatesService
+                        .convertToPoints(checkpoints)
+                        .then((points) => {
+                            points.forEach((point) => {
+                                this.geocoderService.getReverseGeocodeByPoint(point)
+                                    .subscribe((data) => {
+                                        if (data.address)
+                                            point.address = data.address.ShortLabel;
+                                    });
+                            });
+                            return new Task(t.taskId, t.UserId, t.name, t.time, points)
+                        })
+                    promises.push(promise);
+                });
+                return Promise.all(promises)
+                    .then((tasks) => tasks);
+            });
     }
 
     addNewTask(taskId_: number, userId_: number, name_: string) {
@@ -61,31 +87,9 @@ export class TaskService {
             .toPromise();
     }
 
-    makeWay(task: TaskRequest) {
-                //var body = {
-        //    "time": "12-04-2020 23:11",
-        //    "mode": "ShortRoute",
-        //    "name": "Home - Work",
-        //    "userId": "3123123",
-        //    "isFavourite": false,
-        //    "startPoint": {
-        //        "x": 4557725.168,
-        //        "y": 7760357.210
-        //    },
-        //    "checkpoints": [{
-        //        "x": 4560930.802,
-        //        "y": 7760020.759
-        //    },
-        //    {
-        //        "x": 4560932.802,
-        //        "y": 7760029.759
-        //    }
-        //    ],
-        //    "token": "token"
-        //};
-
+    makeWay(task: TaskRequest) { 
         var body = <any>task;
-        body["token"] = "token";
+        body["token"] = TaskService.TOKEN;
         var str = JSON.stringify(body);
         return this.http.post('http://webappbackend.azurewebsites.net/api/tasks', str)
             .map(m => {

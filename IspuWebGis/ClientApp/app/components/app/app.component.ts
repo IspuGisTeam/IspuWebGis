@@ -33,10 +33,9 @@ export class AppComponent implements OnInit {
         this.points.map(p => id = Math.max(p.id, id));
         point.id = id + 1
         this.points.push(point);
-
-        let loc = point.longitude + "," + point.latitude;
-        let geocodeParams: GeocodeParams = new GeocodeParams(loc);
-        this.geocoderService.getReverseGeocode(geocodeParams).subscribe((data) => {
+        
+        this.geocoderService.getReverseGeocodeByPoint(point)
+        .subscribe((data) => {
             if (data.address)
                 point.address = data.address.ShortLabel;
         });
@@ -81,9 +80,6 @@ export class AppComponent implements OnInit {
 
     onTaskChanged(task: Task) {
         this.points = task.points;
-        this.mapService.connectClientPoints(task.checkpoints)
-            .then(() => {
-                this.coordinatesService.convert(task.points);
-            });
+        this.mapService.connectMarkers(this.points);
     }
 }
