@@ -79,20 +79,38 @@ export class EsriMapService {
                     .loadModules([
                         'esri/symbols/SimpleMarkerSymbol',
                         "esri/Graphic",
+                        "esri/symbols/TextSymbol"
                     ])                    
             })
-            .then(([SimpleMarkerSymbol, Graphic]) => {
+            .then(([SimpleMarkerSymbol, Graphic, TextSymbol]) => {
                 this._mapView.graphics.removeAll();
 
                 for (var i = 0; i < points.length; i++) {
                     let p: Point = points[i];
 
+                    var textSymbol = {
+                        type: "text",  // autocasts as new TextSymbol()
+                        color: "black",
+                        haloColor: "white",
+                        haloSize: "10px",
+                        yoffset: -4,
+                        text: i + 1,
+                        font: {  // autocast as new Font()
+                            size: 18,
+                            family: "sans-serif",
+                            weight: "bolder"
+                        }
+                    };
                     var point = {
                         type: "point", // autocasts as new Point()
                         longitude: p.longitude,
                         latitude: p.latitude,
                     };
-                    var pointGraphic = new Graphic({
+                    var textGraphic = new Graphic({
+                        geometry: point,
+                        symbol: textSymbol
+                    });
+                    var markerGraphic = new Graphic({
                         geometry: point,
                         symbol: {
                             type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
@@ -101,7 +119,8 @@ export class EsriMapService {
                             size: 16,
                         }
                     });
-                    this._mapView.graphics.add(pointGraphic);
+                    this._mapView.graphics.add(markerGraphic);
+                    this._mapView.graphics.add(textGraphic);
                 }
             });
     }
