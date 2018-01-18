@@ -5,6 +5,10 @@
         </div>
         <div class='col-sm-9 body-content'>
             <div class="container-fluid">
+                <div class="row">
+                    <login-form></login-form>
+                </div>
+
                 <div class="row" [(style.height.px)]="mapInnerHeight">
                     <esri-map [center]="center" 
                               (centerChange)="centerChange($event)" 

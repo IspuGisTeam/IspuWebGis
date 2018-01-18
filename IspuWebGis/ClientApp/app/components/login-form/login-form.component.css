@@ -1,0 +1,14 @@
+﻿.login-form * {
+    margin: 5px;
+    display: inline !important;
+}
+
+.login-form input {
+    width: 200px !important;
+    min-width: 100px;
+    float: left;
+}
+
+.login-form .btn-double-command {
+    float: right;
+}
