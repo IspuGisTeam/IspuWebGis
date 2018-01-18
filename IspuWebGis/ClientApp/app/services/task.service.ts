@@ -95,8 +95,8 @@ export class TaskService {
                 taskRequest.startPoint = clientPoints[0];
                 clientPoints.shift();
                 taskRequest.checkpoints = clientPoints;
-                taskRequest.name = "N0 " + Date.now();
-                taskRequest.time = new Date();
+                taskRequest.name = task.name
+                taskRequest.time = task.time;
                 taskRequest.userId = 1;
                 taskRequest.mode = "ShortRoute";
                 return this.makeWayRequest(taskRequest);
@@ -119,7 +119,7 @@ export class TaskService {
             .map(m => {
                 try {
                     let jsonresult = m.json();
-                    console.log(jsonresult);                    
+                    console.log(m);                    
                     return jsonresult;
                 }
                 catch (e) {

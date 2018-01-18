@@ -87,23 +87,11 @@ export class AppComponent implements OnInit {
 
     onTaskChanged(task: Task) {
         this.task = task;
-        this.makeWay();
+        //this.makeWay();
     }
 
     onMakeWay() {
-        this.makeWay()
     };
 
-    makeWay() {
-        if (this.task) {
-            this.taskService.makeWay(this.task)
-                .then(() => {
-                    this.mapService.updateMarkers(this.points);
-                })
-                .then(() => {
-                    this.mapService.drawPolyline(this.task.way);
-                });
-            
-        }
-    }
+    
 }

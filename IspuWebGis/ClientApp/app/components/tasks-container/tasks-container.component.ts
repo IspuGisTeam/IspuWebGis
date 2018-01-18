@@ -1,6 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TaskService } from '../../services/task.service';
+import { EsriMapService } from '../../services/esri-map.service';
 import { Task } from '../../classes/task';
+import { Point } from '../../classes/point';
 
 @Component({
     selector: 'tasks-container',
@@ -11,10 +13,11 @@ import { Task } from '../../classes/task';
 })
 export class TasksContainerComponent implements OnInit {
     tasks: Task[] = [];
-    pressOnAddButton: boolean = false;
+    currentTask: Task;
+    isTaskCreating: boolean = false;
     @Output() taskSelected: EventEmitter<Task>;
 
-    constructor(private taskService: TaskService) {
+    constructor(private taskService: TaskService, private mapService: EsriMapService) {
         this.taskSelected = new EventEmitter<Task>(true);
     }
 
@@ -33,15 +36,43 @@ export class TasksContainerComponent implements OnInit {
     }
 
     addTask() {
-        if (this.pressOnAddButton == false) {
-            this.pressOnAddButton = !this.pressOnAddButton;
+        let task = new Task(1, 1, "N0 " + Date.now(), new Date(), new Array<Point>());
+        this.tasks.unshift(task);
+        this.selectTask(task);
+        this.isTaskCreating = true;
+    }
+
+    saveTask() {
+        if (this.currentTask && this.isTaskCreating) {
+            this.drawTask(this.currentTask);
+            this.isTaskCreating = false;
         }
     }
 
-    saveTask(taskId: number, userId: number, name: string) {
-        taskId = this.tasks.length + 1;
-        this.taskService.addNewTask(taskId, userId, name);
-        this.pressOnAddButton = false;
+    deletePoint(point: Point) {
+        if (this.currentTask && this.isTaskCreating) {
+            let pos = -1;
+            this.currentTask.points.forEach((p, i) => {
+                if (p == point) {
+                    pos = i;
+                }
+            });
+            if (pos != -1) {
+                this.currentTask.points.splice(pos, 1);
+                this.mapService.updateMarkers(this.currentTask.points);
+            }
+        }
+    }
+
+    drawTask(t: Task) {
+        this.taskService.makeWay(t)
+            .then(() => {
+                this.mapService.updateMarkers(t.points);
+            })
+            .then(() => {
+                this.mapService.drawPolyline(t.way);
+            });
+
     }
 
     removeTask(task: Task) {
@@ -76,6 +107,11 @@ export class TasksContainerComponent implements OnInit {
     }
 
     selectTask(t: Task) {
+        this.mapService.clearMap();
+        this.currentTask = t;
+        if (t && t.points.length > 1) {
+            this.drawTask(this.currentTask);
+        }
         this.taskSelected.emit(t);
     }
 }

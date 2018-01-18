@@ -67,6 +67,10 @@ export class EsriMapService {
         });
     }
 
+    clearMap() {
+        this._mapView.graphics.removeAll()
+    }
+
     updateMarkers(points: Point[]) {
         return this.esriLoaderService
             .load({ url: this.arcgisJSAPIUrl })
@@ -75,30 +79,30 @@ export class EsriMapService {
                     .loadModules([
                         'esri/symbols/SimpleMarkerSymbol',
                         "esri/Graphic",
-                    ])
-                    .then(([SimpleMarkerSymbol, Graphic]) => {
-                        this._mapView.graphics.removeAll();
+                    ])                    
+            })
+            .then(([SimpleMarkerSymbol, Graphic]) => {
+                this._mapView.graphics.removeAll();
 
-                        for (var i = 0; i < points.length; i++) {
-                            let p: Point = points[i];
+                for (var i = 0; i < points.length; i++) {
+                    let p: Point = points[i];
 
-                            var point = {
-                                type: "point", // autocasts as new Point()
-                                longitude: p.longitude,
-                                latitude: p.latitude,
-                            };
-                            var pointGraphic = new Graphic({
-                                geometry: point,
-                                symbol: {
-                                    type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
-                                    style: "circle",
-                                    color: "#D41F67",
-                                    size: 16,
-                                }
-                            });
-                            this._mapView.graphics.add(pointGraphic);
+                    var point = {
+                        type: "point", // autocasts as new Point()
+                        longitude: p.longitude,
+                        latitude: p.latitude,
+                    };
+                    var pointGraphic = new Graphic({
+                        geometry: point,
+                        symbol: {
+                            type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+                            style: "circle",
+                            color: "#D41F67",
+                            size: 16,
                         }
                     });
+                    this._mapView.graphics.add(pointGraphic);
+                }
             });
     }
     
@@ -114,27 +118,27 @@ export class EsriMapService {
                     .loadModules([
                         'esri/symbols/SimpleMarkerSymbol',
                         "esri/Graphic",
-                    ])
-                    .then(([SimpleMarkerSymbol, Graphic]) => {
-                        //this._mapView.graphics.removeAll(); //dunno how to remove single shit.
+                    ])                    
+            })
+            .then(([SimpleMarkerSymbol, Graphic]) => {
+                //this._mapView.graphics.removeAll(); //dunno how to remove single shit.
 
-                        //var p = new Point(0, longitude, latitude);
-                        var marker = {
-                            type: "point", // autocasts as new Point()
-                            longitude: point.longitude,
-                            latitude: point.latitude,
-                        };
-                        var pointGraphic = new Graphic({
-                            geometry: marker,
-                            symbol: {
-                                type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-                                style: "circle",
-                                color: "#D41F67",
-                                size: 16,
-                            }
-                        });
-                        this._mapView.graphics.add(pointGraphic);
-                    });
+                //var p = new Point(0, longitude, latitude);
+                var marker = {
+                    type: "point", // autocasts as new Point()
+                    longitude: point.longitude,
+                    latitude: point.latitude,
+                };
+                var pointGraphic = new Graphic({
+                    geometry: marker,
+                    symbol: {
+                        type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+                        style: "circle",
+                        color: "#D41F67",
+                        size: 16,
+                    }
+                });
+                this._mapView.graphics.add(pointGraphic);
             });
     }  
 
