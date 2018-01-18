@@ -95,7 +95,7 @@ export class TaskService {
                 taskRequest.startPoint = clientPoints[0];
                 clientPoints.shift();
                 taskRequest.checkpoints = clientPoints;
-                taskRequest.name = "N0 " + Date.now;
+                taskRequest.name = "N0 " + Date.now();
                 taskRequest.time = new Date();
                 taskRequest.userId = 1;
                 taskRequest.mode = "ShortRoute";
