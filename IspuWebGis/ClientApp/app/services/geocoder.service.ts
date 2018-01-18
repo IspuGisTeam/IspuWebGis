@@ -2,6 +2,7 @@
  import { Http } from '@angular/http';
 
  import { GeocodeParams, ReverseGeocodeParams } from "../classes/geocode-params";
+ import { Point } from "../classes/point";
 
  import 'rxjs/Rx';
 
@@ -24,6 +25,12 @@
      private handleError(error: any): Promise<any> {
          console.error('Error', error); // for demo purposes only
          return Promise.reject(error.message || error);
+     }
+
+     getReverseGeocodeByPoint(point: Point) {
+         let loc = point.longitude + "," + point.latitude;
+         let geocodeParams: GeocodeParams = new GeocodeParams(loc);
+         return this.getReverseGeocode(geocodeParams);
      }
 
      getReverseGeocode(paramsMy: GeocodeParams) {

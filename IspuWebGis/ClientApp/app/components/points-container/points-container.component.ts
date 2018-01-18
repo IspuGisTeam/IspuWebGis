@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { EsriMapService } from '../../services/esri-map.service';
 import { Point } from "../../classes/point";
 import { AppComponent } from '../app/app.component';
@@ -13,31 +13,13 @@ import {GeocodeParams} from "../../classes/geocode-params";
     styleUrls: ['./points-container.component.css']
 })
 
-export class PointsContainerComponent implements OnChanges  {
+export class PointsContainerComponent  {
     @Input() points: Array<Point>; // here array of markers
+    @Output() onMakeWay = new EventEmitter<any>();
     constructor(private esriMap: EsriMapService, private appComp: AppComponent, private geocodeService: GeocoderService) { }
-
-    async generatePoints() { 
-        var x = <number>this.appComp.center.longitude;
-        var y = <number>this.appComp.center.latitude;
-        var points = await this.esriMap.addMarkers(x, y); // array of three markers` points (type: Point)
-        var geocoded_points = this.getPointsReverseGeoCode(points);
-        this.points.length = 0;
-        geocoded_points.forEach(p => this.points.push(p));
-    }
-
-    ngOnChanges() {
-
-        //if (this.points) {
-        //    var geocoded_points = this.getPointsReverseGeoCode(this.points);
-        //    this.points.length = 0;
-        //    geocoded_points.forEach(p => this.points.push(p));
-        //}
-    }
-
-    async makeWay() {
-        console.log(this.points.length);
-        this.esriMap.connectMarkers(this.points);
+        
+    makeWay() {
+        this.onMakeWay.emit();
     }
 
     getPointsReverseGeoCode(points: Point[]): Point[] {

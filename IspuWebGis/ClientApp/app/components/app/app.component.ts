@@ -5,14 +5,14 @@ import { GeocoderService } from '../../services/geocoder.service';
 import { Point } from "../../classes/point";
 import { GeocodeParams } from "../../classes/geocode-params";
 import { Task } from "../../classes/task";
+import { TaskService } from '../../services/task.service';
 
 @Component({
     selector: 'app',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
-    points: Array<Point> = [];
+export class AppComponent implements OnInit {    
     task: Task;
 
     mapInnerHeight: string;
@@ -28,30 +28,30 @@ export class AppComponent implements OnInit {
         console.log('Center of map was changed: ' + '[longitude: ' + point.longitude + ', latitude: ' + point.latitude + ']');
     }
 
+    get points(): Array<Point> {
+        if (this.task) {
+            return this.task.points;
+        }
+        return new Array<Point>();
+    }
+
     addPoint(point: Point) {
         var id = 0;
         this.points.map(p => id = Math.max(p.id, id));
         point.id = id + 1
         this.points.push(point);
-
-        let loc = point.latitude + "," + point.longitude;
-        let geocodeParams: GeocodeParams = new GeocodeParams(loc);
-        this.geocoderService.getReverseGeocode(geocodeParams).subscribe((data) => {
+        
+        this.geocoderService.getReverseGeocodeByPoint(point)
+        .subscribe((data) => {
             if (data.address)
                 point.address = data.address.ShortLabel;
         });
-
-        //console.log(this.points.length);
-        //this.mapService.updateMarkers(this.points);
-        //this.mapService.connectMarkers(this.points);
     }
 
     /**
      * Setting with fakes
      */
     ngOnInit() {
-        this.points = [];
-
         let footer = document.getElementById("points-container");
         if (footer != null) this.pointsContainer = <HTMLElement | null>(footer.firstChild);
 
@@ -62,8 +62,10 @@ export class AppComponent implements OnInit {
     constructor(
         private mapService: EsriMapService,
         private geocoderService: GeocoderService,
-        private coordinatesService: CoordinatesService) {
+        private coordinatesService: CoordinatesService,
+        private taskService: TaskService) {
     }
+
 
     private onWindowResize() {
         if (this.pointsContainer != null) {
@@ -84,10 +86,24 @@ export class AppComponent implements OnInit {
     }
 
     onTaskChanged(task: Task) {
-        this.points = task.points;
-        this.mapService.connectClientPoints(task.checkpoints)
-            .then(() => {
-                this.coordinatesService.convert(task.points);
-            });
+        this.task = task;
+        this.makeWay();
+    }
+
+    onMakeWay() {
+        this.makeWay()
+    };
+
+    makeWay() {
+        if (this.task) {
+            this.taskService.makeWay(this.task)
+                .then(() => {
+                    this.mapService.updateMarkers(this.points);
+                })
+                .then(() => {
+                    this.mapService.drawPolyline(this.task.way);
+                });
+            
+        }
     }
 }
