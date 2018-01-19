@@ -87,7 +87,8 @@ export class TaskService {
             .toPromise();
     }
 
-    makeWay(task: Task) {        
+    makeWay(task: Task) {
+        let jsonresult_: any;
         return this.coordinatesService.convertToClientPoints(task.points)
             .then((clientPoints) => {
                 var taskRequest = new TaskRequest();
@@ -103,14 +104,36 @@ export class TaskService {
             })
             .then((jsonresult) => {
                 let way = new Array<any>();
+                jsonresult_ = jsonresult;
                 jsonresult.routeResult.checkpoints.forEach((cPoint: any) => {
                     cPoint.WKTPath.forEach((p: any) => way.push(p));
-                })
+                });
                 task.totalLength = jsonresult.routeResult.totalLength;
                 return this.coordinatesService.convertToPoints(way)
             })
             .then((way) => {
                 task.way = way;
+            }).then(() => {
+                let points = new Array<any>();
+                jsonresult_.routeResult.checkpoints.forEach((cPoint: any) => {
+                    points.push(cPoint.WKTPath[0]);
+                });
+                let len = jsonresult_.routeResult.checkpoints.length;
+                let WKTPath = jsonresult_.routeResult.checkpoints[len - 1].WKTPath;
+                points.push(WKTPath[WKTPath.length - 1]);
+                return this.coordinatesService.convertToPoints(points);
+            }).then((points) => {
+                task.points = points;
+                return points;
+            })
+            .then((points) => {
+                points.forEach((point) => {
+                    this.geocoderService.getReverseGeocodeByPoint(point)
+                        .subscribe((data: any) => {
+                            if (data.address)
+                                point.address = data.address.ShortLabel;
+                        });
+                })
             });
     }
 
