@@ -1,6 +1,6 @@
 <div class="container-fluid footer-container">
     <div class="row footer">
-        <div class="col-xs-9 points-list-container">
+        <div class="col-xs-12 points-list-container">
             <div class="container-fluid points-list">
                 <div class="row" *ngFor="let p of points">
                     <point-item  [point]="p" (askedRedraw)="onRedrawAsked($event)"> Point here: {{p}} </point-item>
@@ -8,7 +8,7 @@
             </div>
         </div>
 
-        <div class="col-xs-3 btn-list-container">
+        <!--<div class="col-xs-3 btn-list-container">
             <div class="row">
                 <button type="button" class="btn hidden-xs hidden-sm">Generate points</button>
                 <button type="button" class="btn hidden-md hidden-lg hidden-xl">
@@ -27,6 +27,6 @@
                     <span class="fa">Save</span>
                 </button>
             </div>
-        </div>
+        </div>-->
     </div>
 </div>

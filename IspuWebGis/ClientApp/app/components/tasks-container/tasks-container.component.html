@@ -2,6 +2,15 @@
     <div class='navbar navbar-inverse'>
         <div class='navbar-header'>
         </div>
+        <div>
+            <button *ngIf="!isTaskCreating" type="button" class="btn btn-success btn-in-line" (click)="addTask();">
+                <span class="hidden-sm hidden-xs">Add</span>
+            </button>
+            <button type="button" class="btn btn-warning btn-in-line" (click)="clearTasks();">
+                <span class="fa idden-md hidden-lg hidden-xl glyphicon glyphicon-remove-circle"></span>
+                <span class="hidden-sm hidden-xs">Clear</span>
+            </button>
+        </div>  
         <div class='clearfix'></div>
         <div class="panel-group" id="panel-all-tasks">
             <div class='navbar-collapse collapse'>
@@ -41,6 +50,9 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <div>
+                                        Length: {{task.totalLength}} m
+                                    </div>
                                     <button *ngIf="isTaskCreating" type="button" class="btn btn-success btn-in-line" (click)="saveTask();">
                                         <span class="hidden-sm hidden-xs">Save</span>
                                     </button>
@@ -51,16 +63,6 @@
                     </li>
                 </ul>
             </div>
-        </div>
-
-        <div>
-            <button *ngIf="!isTaskCreating" type="button" class="btn btn-success btn-in-line" (click)="addTask();">
-                <span class="hidden-sm hidden-xs">Add</span>
-            </button>            
-            <button type="button" class="btn btn-warning btn-in-line" (click)="clearTasks();">
-                <span class="fa idden-md hidden-lg hidden-xl glyphicon glyphicon-remove-circle"></span>
-                <span class="hidden-sm hidden-xs">Clear</span>
-            </button>
-        </div>        
+        </div>      
     </div>
 </div>

@@ -11,4 +11,5 @@ export class TaskRequest {
     public isFavourite: boolean;
     public startPoint: ClientPoint;
     public mode: string;
+    public totalLength: number;
 }

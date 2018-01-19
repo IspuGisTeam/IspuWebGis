@@ -85,6 +85,7 @@ export class EsriMapService {
             .then(([SimpleMarkerSymbol, Graphic, TextSymbol]) => {
                 this._mapView.graphics.removeAll();
 
+                console.log(points);
                 for (var i = 0; i < points.length; i++) {
                     let p: Point = points[i];
 

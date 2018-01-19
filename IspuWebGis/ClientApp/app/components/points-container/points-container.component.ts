@@ -40,6 +40,10 @@ export class PointsContainerComponent  {
     onRedrawAsked(point: Point) {
         for (var i = 0, l = this.points.length; i < l; i++) {
             if (this.points[i].id == point.id) {               
+                let p = point.longitude;
+                point.longitude = point.latitude;
+                point.latitude = p;
+
                 this.points[i] = point;
                 this.esriMap.updateMarkers(this.points);
                 break;

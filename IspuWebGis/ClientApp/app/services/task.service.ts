@@ -27,18 +27,18 @@ export class TaskService {
     }
 
     public tasks: Task[] = [
-        new Task(1, 1, "Task#2", new Date(), []),
-        new Task(2, 2, "Task#2", new Date(), []),
-        new Task(3, 3, "Task#3", new Date(), []),
+        //new Task(1, 1, "Task#2", new Date(), []),
+        //new Task(2, 2, "Task#2", new Date(), []),
+        //new Task(3, 3, "Task#3", new Date(), []),
         // etc.
     ];
 
     getAllTasks(): Promise<Task[]> {
         return this.http
             .get(TaskService.ALL_TASKS)
-            .map(r => r.json())
+            .map((r: any) => r.json())
             .toPromise()
-            .then(resTasks => {
+            .then((resTasks: any) => {
                 let promises = new Array<Promise<Task>>();
                 resTasks.forEach((t: any) => {
                     let checkpoints = t.checkpoints;
@@ -47,12 +47,12 @@ export class TaskService {
                         .then((points) => {
                             points.forEach((point) => {
                                 this.geocoderService.getReverseGeocodeByPoint(point)
-                                    .subscribe((data) => {
+                                    .subscribe((data: any) => {
                                         if (data.address)
                                             point.address = data.address.ShortLabel;
                                     });
                             });
-                            return new Task(t.taskId, t.UserId, t.name, t.time, points)
+                            return new Task(t.taskId, t.UserId, t.name, t.time, points, t.Length)
                         })
                     promises.push(promise);
                 });
@@ -63,7 +63,7 @@ export class TaskService {
 
     addNewTask(taskId_: number, userId_: number, name_: string) {
 
-        this.tasks.push(new Task(taskId_, userId_, name_, new Date(), []));
+        this.tasks.push(new Task(taskId_, userId_, name_, new Date(), [], 0));
     }
 
     removeTask(task: Task): Promise<Boolean> {
@@ -106,9 +106,12 @@ export class TaskService {
                 jsonresult.routeResult.checkpoints.forEach((cPoint: any) => {
                     cPoint.WKTPath.forEach((p: any) => way.push(p));
                 })
+                task.totalLength = jsonresult.routeResult.totalLength;
                 return this.coordinatesService.convertToPoints(way)
             })
-            .then((way) => { task.way = way });
+            .then((way) => {
+                task.way = way;
+            });
     }
 
     makeWayRequest(task: TaskRequest) { 
