@@ -12,4 +12,5 @@ export class TaskRequest {
     public startPoint: ClientPoint;
     public mode: string;
     public totalLength: number;
+    public saveTask: boolean;
 }

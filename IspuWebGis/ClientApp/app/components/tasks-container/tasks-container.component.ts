@@ -36,7 +36,7 @@ export class TasksContainerComponent implements OnInit {
     }
 
     addTask() {
-        let task = new Task(1, 1, "N0 " + Date.now(), new Date(), new Array<Point>(), 0);
+        let task = new Task(1, 1, "N0 " + Date.now(), new Date(), new Array<Point>(), 0, true);
         this.tasks.unshift(task);
         this.selectTask(task);
         this.isTaskCreating = true;

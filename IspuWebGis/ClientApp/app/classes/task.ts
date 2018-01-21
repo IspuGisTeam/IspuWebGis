@@ -10,6 +10,6 @@ export class Task {
     public way: Point[];
 
     constructor(public taskId: number, public UserId: number, public name: string,
-        public time: Date, public points: Point[], public totalLength: number) {
+        public time: Date, public points: Point[], public totalLength: number, public saveTask: boolean) {
     }
 }

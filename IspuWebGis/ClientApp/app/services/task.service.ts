@@ -41,6 +41,7 @@ export class TaskService {
             .then((resTasks: any) => {
                 let promises = new Array<Promise<Task>>();
                 resTasks.forEach((t: any) => {
+                    console.log(t);
                     let checkpoints = t.checkpoints;
                     let promise = this.coordinatesService
                         .convertToPoints(checkpoints)
@@ -52,7 +53,7 @@ export class TaskService {
                                             point.address = data.address.ShortLabel;
                                     });
                             });
-                            return new Task(t.taskId, t.UserId, t.name, t.time, points, t.Length)
+                            return new Task(t.taskId, t.UserId, t.name, t.time, points, t.Length, false)
                         })
                     promises.push(promise);
                 });
@@ -63,7 +64,7 @@ export class TaskService {
 
     addNewTask(taskId_: number, userId_: number, name_: string) {
 
-        this.tasks.push(new Task(taskId_, userId_, name_, new Date(), [], 0));
+        this.tasks.push(new Task(taskId_, userId_, name_, new Date(), [], 0, true));
     }
 
     removeTask(task: Task): Promise<Boolean> {
@@ -100,6 +101,7 @@ export class TaskService {
                 taskRequest.time = task.time;
                 taskRequest.userId = 1;
                 taskRequest.mode = "ShortRoute";
+                taskRequest.saveTask = task.saveTask;
                 return this.makeWayRequest(taskRequest);
             })
             .then((jsonresult) => {
