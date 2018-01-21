@@ -14,6 +14,7 @@ import { Point } from '../../classes/point';
 export class TasksContainerComponent implements OnInit {
     tasks: Task[] = [];
     currentTask: Task;
+    taskName: string;
     isTaskCreating: boolean = false;
     @Output() taskSelected: EventEmitter<Task>;
 
@@ -44,6 +45,10 @@ export class TasksContainerComponent implements OnInit {
 
     saveTask() {
         if (this.currentTask && this.isTaskCreating) {
+            if (this.taskName) {
+                this.currentTask.name = this.taskName;
+                this.taskName = "";
+            }
             this.drawTask(this.currentTask);
             this.isTaskCreating = false;
         }
@@ -70,6 +75,7 @@ export class TasksContainerComponent implements OnInit {
                 this.mapService.updateMarkers(t.points);
             })
             .then(() => {
+                t.saveTask = false;
                 this.mapService.drawPolyline(t.way);
             });
 

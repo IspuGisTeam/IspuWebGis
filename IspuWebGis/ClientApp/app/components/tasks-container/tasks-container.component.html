@@ -30,6 +30,7 @@
 
                             <div *ngIf="task == currentTask">
                                 <div class="panel-body">
+                                    <input  *ngIf="isTaskCreating" type="text" placeholder="Any name" [(ngModel)]="taskName"/>
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
@@ -55,7 +56,7 @@
                                     </div>
                                     <button *ngIf="isTaskCreating" type="button" class="btn btn-success btn-in-line" (click)="saveTask();">
                                         <span class="hidden-sm hidden-xs">Save</span>
-                                    </button>
+                                    </button>                                    
                                 </div>
                             </div>
                         </div>

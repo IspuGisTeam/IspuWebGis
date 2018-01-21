@@ -97,7 +97,7 @@ export class TaskService {
                 taskRequest.startPoint = clientPoints[0];
                 //clientPoints.shift();
                 taskRequest.checkpoints = clientPoints;
-                taskRequest.name = task.name
+                taskRequest.name = task.name;
                 taskRequest.time = task.time;
                 taskRequest.userId = 1;
                 taskRequest.mode = "ShortRoute";
@@ -124,7 +124,7 @@ export class TaskService {
                 });
                 let len = jsonresult_.routeResult.checkpoints.length;
                 let WKTPath = jsonresult_.routeResult.checkpoints[len - 1].WKTPath;
-                if ([WKTPath.length - 1]) {
+                if (WKTPath[WKTPath.length - 1]) {
                     points.push(WKTPath[WKTPath.length - 1]);
                 }
                 return this.coordinatesService.convertToPoints(points);
