@@ -95,7 +95,7 @@ export class TaskService {
                 var taskRequest = new TaskRequest();
                 taskRequest.isFavourite = false;
                 taskRequest.startPoint = clientPoints[0];
-                clientPoints.shift();
+                //clientPoints.shift();
                 taskRequest.checkpoints = clientPoints;
                 taskRequest.name = task.name
                 taskRequest.time = task.time;
@@ -110,19 +110,23 @@ export class TaskService {
                 jsonresult.routeResult.checkpoints.forEach((cPoint: any) => {
                     cPoint.WKTPath.forEach((p: any) => way.push(p));
                 });
-                task.totalLength = jsonresult.routeResult.totalLength;
+                task.totalLength = jsonresult.routeResult.totalLength;              
                 return this.coordinatesService.convertToPoints(way)
             })
-            .then((way) => {
+            .then((way) => {               
                 task.way = way;
             }).then(() => {
                 let points = new Array<any>();
                 jsonresult_.routeResult.checkpoints.forEach((cPoint: any) => {
-                    points.push(cPoint.WKTPath[0]);
+                    if (cPoint.WKTPath[0]) {
+                        points.push(cPoint.WKTPath[0]);
+                    }
                 });
                 let len = jsonresult_.routeResult.checkpoints.length;
                 let WKTPath = jsonresult_.routeResult.checkpoints[len - 1].WKTPath;
-                points.push(WKTPath[WKTPath.length - 1]);
+                if ([WKTPath.length - 1]) {
+                    points.push(WKTPath[WKTPath.length - 1]);
+                }
                 return this.coordinatesService.convertToPoints(points);
             }).then((points) => {
                 task.points = points;
@@ -144,10 +148,11 @@ export class TaskService {
         body["token"] = TaskService.TOKEN;
         var str = JSON.stringify(body);
         return this.http.post('http://webappbackend.azurewebsites.net/api/tasks', str)
-            .map(m => {
+            .map((m: any) => {
                 try {
                     let jsonresult = m.json();
-                    console.log(m);                    
+                    console.log(m); 
+                    console.log(jsonresult);         
                     return jsonresult;
                 }
                 catch (e) {
