@@ -14,6 +14,7 @@ import { TaskService } from '../../services/task.service';
 })
 export class AppComponent implements OnInit {    
     task: Task;
+    isModalShown: boolean = false;
 
     mapInnerHeight: string;
     pointsContainer: HTMLElement | null;
@@ -33,6 +34,14 @@ export class AppComponent implements OnInit {
             return this.task.points;
         }
         return new Array<Point>();
+    }
+
+    showModal() {
+        this.isModalShown = true;
+    }
+
+    hideModal() {
+        this.isModalShown = false;
     }
 
     addPoint(point: Point) {

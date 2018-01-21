@@ -1,18 +1,25 @@
-<div class='container-fluid'>
+﻿<div class='container-fluid'>
+    <button 
+            style="position: absolute; top: 10px; right: 10px; z-index: 10;"
+            type="button" 
+            class="btn btn-primary" 
+            (click)="showModal()">
+        About us
+    </button>
     <div class='row'>
-        <div class='col-sm-3 col-left'>
+        <div class='col-sm-3 col-left'>            
             <tasks-container (taskSelected)="onTaskChanged($event)"></tasks-container>
         </div>
         <div class='col-sm-9 body-content'>
             <div class="container-fluid">
                 <div class="row" [(style.height.px)]="mapInnerHeight">
-                    <esri-map [center]="center" 
-                              (centerChange)="centerChange($event)" 
+                    <esri-map [center]="center"
+                              (centerChange)="centerChange($event)"
                               (addPoint)="addPoint($event)"
                               [points]="points"></esri-map>
                 </div>
                 <div class="row">
-                    <points-container id="points-container" 
+                    <points-container id="points-container"
                                       [points]="points"
                                       (onMakeWay)="onMakeWay()"></points-container>
                 </div>
@@ -20,3 +27,40 @@
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div [ngClass]="{'modal' : true, 'show' : isModalShown }"
+     id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">ABOUT US</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="hideModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align: center">
+                <p style="font-style: oblique; font-weight: 600; font-variant: small-caps">
+                    Messrs, Moony, Wormtail, Padfoot and Prongs <br /> are proud to present <br /> the MARAUDER’S MAP.
+                </p>
+                <p>
+                    Wow... wow... Just a joke :) <br />
+                    <br />
+                    This is studing application (GIS) developed by <br />
+                    masters-students ISPU under under the direction of Sadykov A.M. <br />
+                    Development team leaders: Konstantin Kurganov and Andrew Shilkin.
+                    <br />
+                    <br />
+                    Russia, Ivanovo, 2017-2018
+                    <br />
+                    All copy-rights are cursed!
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="hideModal()">Mischief managed!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
