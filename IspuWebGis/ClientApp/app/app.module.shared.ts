@@ -8,11 +8,13 @@ import { AppComponent } from './components/app/app.component';
 import { TasksContainerComponent } from './components/tasks-container/tasks-container.component';
 import { PointsContainerComponent } from './components/points-container/points-container.component';
 import { PointItemComponent } from './components/point-item/point-item.component';
+import { LoginFormComponent } from './components/login-form/login-form.component';
 import { EsriLoaderModule } from 'angular-esri-loader';
 import { EsriMapService } from './services/esri-map.service';
 import { EsriMapComponent } from './components/esri-map/esri-map.component';
 import { GeocoderService } from './services/geocoder.service';
 import { TaskService } from './services/task.service';
+import { AuthService } from './services/auth.service';
 import { CoordinatesService } from './services/coordinates.service';
 
 @NgModule({
@@ -21,7 +23,8 @@ import { CoordinatesService } from './services/coordinates.service';
         EsriMapComponent,
         TasksContainerComponent,
         PointsContainerComponent,
-        PointItemComponent
+        PointItemComponent,
+        LoginFormComponent,
     ],
     imports: [
         CommonModule,
@@ -38,6 +41,7 @@ import { CoordinatesService } from './services/coordinates.service';
         GeocoderService,
         TaskService,
         CoordinatesService,
+        AuthService,
     ]
 })
 export class AppModuleShared {

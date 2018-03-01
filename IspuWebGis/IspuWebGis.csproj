@@ -27,6 +27,7 @@
     <None Remove="ClientApp\app\classes\taskRequest.ts" />
     <None Remove="ClientApp\app\components\esri-map\esri-map.component.ts" />
     <None Remove="ClientApp\app\components\esri-map\esri-map.service.ts" />
+    <None Remove="ClientApp\app\services\auth.service.ts" />
     <None Remove="ClientApp\app\services\geocoder.service.ts" />
   </ItemGroup>
 
@@ -35,7 +36,9 @@
     <TypeScriptCompile Include="ClientApp\app\classes\geocode-params.ts" />
     <TypeScriptCompile Include="ClientApp\app\classes\point.ts" />
     <TypeScriptCompile Include="ClientApp\app\classes\taskRequest.ts" />
+    <TypeScriptCompile Include="ClientApp\app\classes\auth.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\esri-map\esri-map.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\auth.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\esri-map.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\geocoder.service.ts" />
   </ItemGroup>

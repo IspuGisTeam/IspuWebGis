@@ -1,0 +1,11 @@
+﻿<div class="form-group login-form" *ngIf="!isLogged">
+    <input type="text" class="form-control" [(ngModel)]="user.username" placeholder="Логин" />
+    <input type="password" class="form-control" [(ngModel)]="user.password" placeholder="Пароль" />
+
+    <button class="btn btn-default btn-double-command" (click)="register();">Зарегистрироваться</button>
+    <button class="btn btn-primary btn-double-command" (click)="login();">Войти</button>
+</div>
+
+<div class="form-group login-form" *ngIf="isLogged">
+    <button class="btn btn-default btn-double-command" (click)="logout()">Выход</button>
+</div>

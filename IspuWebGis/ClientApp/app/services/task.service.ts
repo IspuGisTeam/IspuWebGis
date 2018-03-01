@@ -4,6 +4,7 @@ import { Task } from '../classes/task';
 import { TaskRequest } from '../classes/taskRequest';
 import { GeocoderService } from './geocoder.service';
 import { CoordinatesService } from './coordinates.service';
+import { AuthService } from './auth.service';
 
 import { Observable } from "rxjs/Rx";
 
@@ -13,7 +14,7 @@ import 'rxjs/add/operator/toPromise';
 export class TaskService {
     private static readonly DOMAIN = "http://webappbackend.azurewebsites.net";
     private static readonly ROUTE_PREFIX = "/api/tasks";
-    private static readonly TOKEN = "token";
+    private static readonly TOKEN = AuthService.getToken();
     private static readonly TOKEN_URI = "?token=" + TaskService.TOKEN;
 
 
